@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Die Chroniken Mittelerdes · Chronicles of Middle-earth</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#c9a84c">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Middle-earth">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -465,7 +472,7 @@
 
   <div class="form-wrap">
     <label class="field-label" id="nameLabel" for="charName">Your Name in Middle-earth</label>
-    <input class="field-input" id="charName" maxlength="28">
+    <input class="field-input" id="charName" type="text" maxlength="28" autocomplete="off" name="character-name">
 
     <label class="field-label" id="pathLabel">Your Path</label>
     <div class="class-grid" id="classGrid"></div>
@@ -485,6 +492,7 @@
       <div class="chapter-tag" id="chapterTag">Chapter I</div>
       <div class="topbar-right">
         <button class="icon-btn" onclick="rollManual()">🎲 <span id="btnRoll">Roll</span></button>
+        <button class="icon-btn" onclick="newStory()" id="btnNewStory">📖 <span id="btnNew">New</span></button>
         <button class="lang-toggle" onclick="switchLang()" id="langSwitchBtn">🌐 EN/DE</button>
         <button class="icon-btn" onclick="changeKey()" id="btnKey">🔑 Key</button>
       </div>
@@ -567,7 +575,7 @@
         <div class="choices-label" id="choicesLabel">⟡ What do you do? ⟡</div>
         <div class="choices-grid" id="choicesGrid"></div>
         <div class="custom-row">
-          <input class="custom-inp" id="customInp" maxlength="180" onkeypress="if(event.key==='Enter')sendCustom()">
+          <input class="custom-inp" id="customInp" type="text" maxlength="180" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="story-action" onkeypress="if(event.key==='Enter')sendCustom()">
           <button class="send-btn" onclick="sendCustom()" id="sendBtn">DECLARE →</button>
         </div>
       </div>
@@ -710,7 +718,8 @@
       psChar:'Your Character', psInv:'Inventory', psLoc:'Location', psComp:'Companions', psQuest:'Quest Log', psRumor:'Whispers & Rumours',
       anStr:'Strength', anDex:'Agility', anWis:'Wisdom', anLck:'Luck', anEnd:'Endurance', anMag:'Spirit',
       barHp:'VITALITY', barMp:'SPIRIT', barXp:'LEGEND · Lv',
-      btnRoll:'Roll', btnKey:'Key',
+      btnRoll:'Roll', btnKey:'Key', btnNew:'New',
+      newStoryConfirm:'Start a new story? All current progress will be lost.',
       choicesLabel:'⟡ What do you do? ⟡',
       customPlaceholder:'Or write your own action...',
       sendBtn:'DECLARE →',
@@ -809,7 +818,8 @@
       psChar:'Dein Charakter', psInv:'Inventar', psLoc:'Ort', psComp:'Gefährten', psQuest:'Auftragslog', psRumor:'Gerüchte & Flüstern',
       anStr:'Stärke', anDex:'Agilität', anWis:'Weisheit', anLck:'Glück', anEnd:'Ausdauer', anMag:'Geist',
       barHp:'LEBENSKRAFT', barMp:'GEISTESKRAFT', barXp:'LEGENDE · Lv',
-      btnRoll:'Würfeln', btnKey:'Schlüssel',
+      btnRoll:'Würfeln', btnKey:'Schlüssel', btnNew:'Neu',
+      newStoryConfirm:'Neue Geschichte beginnen? Der aktuelle Fortschritt geht verloren.',
       choicesLabel:'⟡ Was tust du? ⟡',
       customPlaceholder:'Oder schreibe deine eigene Handlung...',
       sendBtn:'ERKLÄREN →',
@@ -983,7 +993,7 @@
     set('anStr',l('anStr')); set('anDex',l('anDex')); set('anWis',l('anWis'));
     set('anLck',l('anLck')); set('anEnd',l('anEnd')); set('anMag',l('anMag'));
     set('barHpLabel',l('barHp')); set('barMpLabel',l('barMp'));
-    set('btnRoll',l('btnRoll'));
+    set('btnRoll',l('btnRoll')); set('btnNew',l('btnNew'));
     set('choicesLabel',l('choicesLabel'));
     document.getElementById('customInp').placeholder=l('customPlaceholder');
     setVal('sendBtn',l('sendBtn'));
@@ -994,6 +1004,7 @@
 
   function set(id,html){ const el=document.getElementById(id); if(el) el.innerHTML=html; }
   function setVal(id,txt){ const el=document.getElementById(id); if(el) el.textContent=txt; }
+  const delay = ms => new Promise(r => setTimeout(r, ms));
 
   function buildRaceGrid(){
     const grid=document.getElementById('raceGrid');
@@ -1022,6 +1033,71 @@
   function saveKey(key){ try{ localStorage.setItem('lotr_groq_key', key); }catch(e){} }
   function loadKey(){ try{ return localStorage.getItem('lotr_groq_key')||''; }catch(e){ return ''; } }
   function forgetKey(){ try{ localStorage.removeItem('lotr_groq_key'); }catch(e){} }
+
+  /* ════════════════════════════════
+     GAME SAVE / LOAD / NEW STORY
+  ════════════════════════════════ */
+  function saveGame(){
+    if(!G.char.name) return;
+    try{
+      const data = {
+        G: JSON.parse(JSON.stringify({...G, busy:false})),
+        lang,
+        storyHTML: document.getElementById('storyContent').innerHTML,
+        choicesHTML: document.getElementById('choicesGrid').innerHTML,
+        questHTML: document.getElementById('questLog').innerHTML,
+        rumorHTML: document.getElementById('rumorList').innerHTML,
+        compHTML: document.getElementById('compList').innerHTML,
+        chapterTag: document.getElementById('chapterTag')?.textContent||''
+      };
+      localStorage.setItem('lotr_savegame', JSON.stringify(data));
+    }catch(e){}
+  }
+
+  function loadSavedGame(){
+    try{
+      const raw = localStorage.getItem('lotr_savegame');
+      if(!raw) return false;
+      const data = JSON.parse(raw);
+      if(!data.G?.char?.name) return false;
+      Object.assign(G, data.G);
+      G.busy = false;
+      lang = data.lang||'en';
+      document.documentElement.lang = lang;
+      showScreen('gameScreen');
+      applyLang();
+      updateTabLabels();
+      document.getElementById('storyContent').innerHTML = data.storyHTML||'';
+      document.getElementById('choicesGrid').innerHTML = data.choicesHTML||'';
+      document.getElementById('questLog').innerHTML = data.questHTML||'';
+      document.getElementById('rumorList').innerHTML = data.rumorHTML||'';
+      document.getElementById('compList').innerHTML = data.compHTML||'';
+      const ct = document.getElementById('chapterTag');
+      if(ct && data.chapterTag) ct.textContent = data.chapterTag;
+      document.getElementById('locName').textContent = G.location.name;
+      document.getElementById('locDesc').textContent = G.location.desc;
+      refreshCharPanel();
+      scroll();
+      toast(lang==='de'?'Willkommen zurück':'Welcome back', G.char.name+' · Lv '+G.char.level);
+      return true;
+    }catch(e){ return false; }
+  }
+
+  function newStory(){
+    if(!confirm(t('newStoryConfirm'))) return;
+    try{ localStorage.removeItem('lotr_savegame'); }catch(e){}
+    Object.assign(G,{
+      char:{ name:'',race:'',raceDesc:'',cls:'',icon:'🌿',level:1,hp:100,hpMax:100,mp:80,mpMax:80,xp:0,xpNext:100,
+        str:10,dex:10,wis:10,lck:10,end:10,mag:6,inventory:[],companions:[] },
+      location:{ name:'The Shire',desc:'' },
+      history:[], turn:0, busy:false, lastNPC:'',
+      selectedRace:'', selectedClass:''
+    });
+    document.getElementById('storyContent').innerHTML='';
+    document.getElementById('choicesGrid').innerHTML='';
+    document.getElementById('charName').value='';
+    showScreen('langScreen');
+  }
 
   /* ════════════════════════════════
      API SCREEN
@@ -1065,14 +1141,16 @@
     document.getElementById('apiBtn').disabled=false;
   }
 
-  /* Auto-load saved key on startup */
+  /* Auto-load saved key and game on startup */
   window.addEventListener('DOMContentLoaded', ()=>{
     const saved = loadKey();
     if(saved){
       document.getElementById('apiKeyInput').value = saved;
-      // Show a subtle hint that the key was remembered
+      G.apiKey = saved;
       setStatus('✦ Schlüssel gespeichert · Key remembered ✦','ok');
     }
+    // Restore saved game if available
+    loadSavedGame();
   });
 
   /* ════════════════════════════════
@@ -1394,6 +1472,7 @@ JSON SCHEMA:
     await delay(200);
     setChoices(t('openChoices'));
     G.history.push(t('openHistory'));
+    saveGame();
   }
 
   /* ════════════════════════════════
@@ -1431,6 +1510,7 @@ JSON SCHEMA:
     renderResponse(parsed);
     updateBars();
     G.busy=false; unlock();
+    saveGame();
   }
 
   async function handleCombat(label){
@@ -1465,6 +1545,7 @@ JSON SCHEMA:
     hideTyping();
     renderResponse(parsed);
     G.busy=false; unlock();
+    saveGame();
   }
 
   async function sendCustom(){
@@ -1604,6 +1685,15 @@ JSON SCHEMA:
         lbl.style.color = isCrit?'var(--gold)':'var(--parchment-dark)';
       }
     },60);
+  }
+
+  /* ════════════════════════════════
+     PWA SERVICE WORKER REGISTRATION
+  ════════════════════════════════ */
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', ()=>{
+      navigator.serviceWorker.register('/sw.js').catch(()=>{});
+    });
   }
 
   // Update tab labels on language change

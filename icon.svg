@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="80" fill="#0d0b08"/>
+  <!-- Outer ring -->
+  <circle cx="256" cy="230" r="160" fill="none" stroke="#c9a84c" stroke-width="14"/>
+  <!-- Eye shape -->
+  <path d="M96 230 Q256 120 416 230 Q256 340 96 230Z" fill="none" stroke="#c9a84c" stroke-width="10"/>
+  <!-- Pupil -->
+  <ellipse cx="256" cy="230" rx="42" ry="62" fill="#8b1a1a"/>
+  <ellipse cx="256" cy="230" rx="20" ry="30" fill="#1a0808"/>
+  <!-- Gold glint -->
+  <circle cx="270" cy="215" r="7" fill="#f0d080" opacity="0.6"/>
+  <!-- Title text -->
+  <text x="256" y="450" text-anchor="middle" fill="#c9a84c" font-size="42" font-family="Georgia, serif" letter-spacing="3">MIDDLE-EARTH</text>
+</svg>

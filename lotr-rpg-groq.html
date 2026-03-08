@@ -1,264 +1,378 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Die Chroniken Mittelerdes · Chronicles of Middle-earth</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --gold:#c9a84c; --gold-light:#f0d080; --gold-dark:#8a6c2a;
-    --crimson:#8b1a1a; --parchment:#f5e6c8; --parchment-dark:#d4c4a0;
-    --ink:#1a120b; --green:#4a7c3f; --blue:#4a7fa5;
-  }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{background:#080604;color:var(--parchment);font-family:'EB Garamond',Georgia,serif;min-height:100vh;overflow-x:hidden;}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Die Chroniken Mittelerdes · Chronicles of Middle-earth</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold:#c9a84c; --gold-light:#f0d080; --gold-dark:#8a6c2a;
+      --crimson:#8b1a1a; --parchment:#f5e6c8; --parchment-dark:#d4c4a0;
+      --ink:#1a120b; --green:#4a7c3f; --blue:#4a7fa5;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{background:#080604;color:var(--parchment);font-family:'EB Garamond',Georgia,serif;min-height:100vh;overflow-x:hidden;}
 
-  /* STARFIELD */
-  #starfield{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
-  .star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,3s) ease-in-out infinite var(--dl,0s);opacity:0;}
-  @keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:var(--o,.7);transform:scale(1)}}
-  .mist{position:fixed;bottom:0;left:0;width:200%;height:300px;pointer-events:none;z-index:1;
-    background:radial-gradient(ellipse at 40% 100%,rgba(80,55,30,.15) 0%,transparent 65%);
-    animation:mist 20s ease-in-out infinite alternate;}
-  @keyframes mist{0%{transform:translateX(-8%)}100%{transform:translateX(4%)}}
+    /* STARFIELD */
+    #starfield{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+    .star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d,3s) ease-in-out infinite var(--dl,0s);opacity:0;}
+    @keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:var(--o,.7);transform:scale(1)}}
+    .mist{position:fixed;bottom:0;left:0;width:200%;height:300px;pointer-events:none;z-index:1;
+      background:radial-gradient(ellipse at 40% 100%,rgba(80,55,30,.15) 0%,transparent 65%);
+      animation:mist 20s ease-in-out infinite alternate;}
+    @keyframes mist{0%{transform:translateX(-8%)}100%{transform:translateX(4%)}}
 
-  /* SCREENS */
-  .screen{position:relative;z-index:10;min-height:100vh;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
-  .screen.active{display:flex;}
+    /* SCREENS */
+    .screen{position:relative;z-index:10;min-height:100vh;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+    .screen.active{display:flex;}
 
-  /* ── LANG PICKER ── */
-  #langScreen{
-    background:
-      radial-gradient(ellipse at 50% 110%,rgba(139,26,26,.3) 0%,transparent 55%),
-      radial-gradient(ellipse at 20% 20%,rgba(74,127,165,.12) 0%,transparent 45%),
-      linear-gradient(180deg,#040302 0%,#0b0806 50%,#100904 100%);
-    text-align:center;gap:0;
-  }
-  .eye{width:110px;height:55px;margin:0 auto 28px;position:relative;animation:eyePulse 4s ease-in-out infinite;}
-  .eye::before{content:'';position:absolute;inset:0;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
-    background:radial-gradient(ellipse at 50% 40%,#ff4400 0%,#cc2200 30%,#660000 60%,#1a0000 100%);
-    box-shadow:0 0 40px rgba(255,100,0,.6),0 0 80px rgba(200,50,0,.35);}
-  .eye::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:18px;height:42px;background:#000;border-radius:50%;}
-  @keyframes eyePulse{0%,100%{transform:scaleX(1) scaleY(1);filter:brightness(1)}50%{transform:scaleX(1.06) scaleY(1.12);filter:brightness(1.35)}}
+    /* ── LANG PICKER ── */
+    #langScreen{
+      background:
+              radial-gradient(ellipse at 50% 110%,rgba(139,26,26,.3) 0%,transparent 55%),
+              radial-gradient(ellipse at 20% 20%,rgba(74,127,165,.12) 0%,transparent 45%),
+              linear-gradient(180deg,#040302 0%,#0b0806 50%,#100904 100%);
+      text-align:center;gap:0;
+    }
+    .eye{width:110px;height:55px;margin:0 auto 28px;position:relative;animation:eyePulse 4s ease-in-out infinite;}
+    .eye::before{content:'';position:absolute;inset:0;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+      background:radial-gradient(ellipse at 50% 40%,#ff4400 0%,#cc2200 30%,#660000 60%,#1a0000 100%);
+      box-shadow:0 0 40px rgba(255,100,0,.6),0 0 80px rgba(200,50,0,.35);}
+    .eye::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:18px;height:42px;background:#000;border-radius:50%;}
+    @keyframes eyePulse{0%,100%{transform:scaleX(1) scaleY(1);filter:brightness(1)}50%{transform:scaleX(1.06) scaleY(1.12);filter:brightness(1.35)}}
 
-  .title-rune{font-family:'Cinzel Decorative',serif;font-size:clamp(10px,1.8vw,13px);color:var(--gold);letter-spacing:8px;opacity:.7;animation:fadeUp 1.5s ease both;}
-  .title-main{font-family:'Cinzel Decorative',serif;font-size:clamp(28px,5.5vw,66px);font-weight:900;line-height:1.1;
-    background:linear-gradient(180deg,#f0d080 0%,#c9a84c 45%,#8a6c2a 80%,#c9a84c 100%);
-    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-    filter:drop-shadow(0 0 28px rgba(201,168,76,.4));animation:fadeUp 1.5s ease .2s both;margin:8px 0;}
-  .title-sub{font-family:'Cinzel',serif;font-size:clamp(11px,1.8vw,15px);color:var(--parchment-dark);letter-spacing:4px;font-style:italic;animation:fadeUp 1.5s ease .4s both;margin-bottom:50px;}
+    .title-rune{font-family:'Cinzel Decorative',serif;font-size:clamp(10px,1.8vw,13px);color:var(--gold);letter-spacing:8px;opacity:.7;animation:fadeUp 1.5s ease both;}
+    .title-main{font-family:'Cinzel Decorative',serif;font-size:clamp(28px,5.5vw,66px);font-weight:900;line-height:1.1;
+      background:linear-gradient(180deg,#f0d080 0%,#c9a84c 45%,#8a6c2a 80%,#c9a84c 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      filter:drop-shadow(0 0 28px rgba(201,168,76,.4));animation:fadeUp 1.5s ease .2s both;margin:8px 0;}
+    .title-sub{font-family:'Cinzel',serif;font-size:clamp(11px,1.8vw,15px);color:var(--parchment-dark);letter-spacing:4px;font-style:italic;animation:fadeUp 1.5s ease .4s both;margin-bottom:50px;}
 
-  .lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:440px;width:100%;animation:fadeUp 1.5s ease .6s both;}
-  .lang-card{background:linear-gradient(135deg,rgba(18,12,5,.95),rgba(28,18,8,.95));
-    border:1px solid rgba(201,168,76,.22);padding:32px 24px;cursor:pointer;transition:all .35s;text-align:center;position:relative;overflow:hidden;}
-  .lang-card::before{content:'';position:absolute;bottom:0;left:0;width:100%;height:2px;background:var(--gold);transform:scaleX(0);transition:transform .35s;transform-origin:left;}
-  .lang-card:hover{border-color:var(--gold);transform:translateY(-4px);box-shadow:0 12px 36px rgba(201,168,76,.2);}
-  .lang-card:hover::before{transform:scaleX(1);}
-  .lang-flag{font-size:42px;display:block;margin-bottom:12px;}
-  .lang-name{font-family:'Cinzel Decorative',serif;font-size:20px;color:var(--gold);margin-bottom:6px;}
-  .lang-hint{font-size:13px;color:var(--parchment-dark);font-style:italic;}
+    .lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:440px;width:100%;animation:fadeUp 1.5s ease .6s both;}
+    .lang-card{background:linear-gradient(135deg,rgba(18,12,5,.95),rgba(28,18,8,.95));
+      border:1px solid rgba(201,168,76,.22);padding:32px 24px;cursor:pointer;transition:all .35s;text-align:center;position:relative;overflow:hidden;}
+    .lang-card::before{content:'';position:absolute;bottom:0;left:0;width:100%;height:2px;background:var(--gold);transform:scaleX(0);transition:transform .35s;transform-origin:left;}
+    .lang-card:hover{border-color:var(--gold);transform:translateY(-4px);box-shadow:0 12px 36px rgba(201,168,76,.2);}
+    .lang-card:hover::before{transform:scaleX(1);}
+    .lang-flag{font-size:42px;display:block;margin-bottom:12px;}
+    .lang-name{font-family:'Cinzel Decorative',serif;font-size:20px;color:var(--gold);margin-bottom:6px;}
+    .lang-hint{font-size:13px;color:var(--parchment-dark);font-style:italic;}
 
-  /* ── LANGUAGE TOGGLE in-game ── */
-  .lang-toggle{background:none;border:1px solid rgba(201,168,76,.3);color:var(--gold-dark);padding:5px 12px;cursor:pointer;font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;transition:all .25s;}
-  .lang-toggle:hover{border-color:var(--gold);color:var(--gold);}
+    /* ── LANGUAGE TOGGLE in-game ── */
+    .lang-toggle{background:none;border:1px solid rgba(201,168,76,.3);color:var(--gold-dark);padding:5px 12px;cursor:pointer;font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;transition:all .25s;}
+    .lang-toggle:hover{border-color:var(--gold);color:var(--gold);}
 
-  /* ── API SCREEN ── */
-  #apiScreen{
-    background:
-      radial-gradient(ellipse at 50% 110%,rgba(139,26,26,.28) 0%,transparent 55%),
-      linear-gradient(180deg,#040302 0%,#0b0806 50%,#100904 100%);
-    text-align:center;gap:0;
-  }
-  .api-box{background:linear-gradient(135deg,rgba(18,12,5,.97),rgba(28,18,8,.97));
-    border:1px solid rgba(201,168,76,.25);padding:36px 40px;max-width:520px;width:100%;
-    animation:fadeUp 1.5s ease .4s both;position:relative;overflow:hidden;}
-  .api-box::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,transparent,var(--gold),transparent);}
-  .api-box-title{font-family:'Cinzel',serif;font-size:13px;letter-spacing:4px;color:var(--gold-dark);text-transform:uppercase;margin-bottom:18px;}
-  .api-box p{font-size:14px;color:var(--parchment-dark);line-height:1.7;margin-bottom:20px;font-style:italic;}
-  .api-box a{color:var(--gold);text-decoration:none;}
-  .api-box a:hover{color:var(--gold-light);text-decoration:underline;}
+    /* ── API SCREEN ── */
+    #apiScreen{
+      background:
+              radial-gradient(ellipse at 50% 110%,rgba(139,26,26,.28) 0%,transparent 55%),
+              linear-gradient(180deg,#040302 0%,#0b0806 50%,#100904 100%);
+      text-align:center;gap:0;
+    }
+    .api-box{background:linear-gradient(135deg,rgba(18,12,5,.97),rgba(28,18,8,.97));
+      border:1px solid rgba(201,168,76,.25);padding:36px 40px;max-width:520px;width:100%;
+      animation:fadeUp 1.5s ease .4s both;position:relative;overflow:hidden;}
+    .api-box::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(180deg,transparent,var(--gold),transparent);}
+    .api-box-title{font-family:'Cinzel',serif;font-size:13px;letter-spacing:4px;color:var(--gold-dark);text-transform:uppercase;margin-bottom:18px;}
+    .api-box p{font-size:14px;color:var(--parchment-dark);line-height:1.7;margin-bottom:20px;font-style:italic;}
+    .api-box a{color:var(--gold);text-decoration:none;}
+    .api-box a:hover{color:var(--gold-light);text-decoration:underline;}
 
-  .field-label{font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;color:var(--gold-dark);text-transform:uppercase;margin-bottom:8px;display:block;}
-  .field-input{width:100%;background:rgba(8,6,3,.85);border:1px solid rgba(201,168,76,.2);border-bottom:2px solid var(--gold-dark);
-    color:var(--parchment);font-family:'EB Garamond',serif;font-size:15px;padding:11px 14px;outline:none;transition:all .3s;margin-bottom:20px;}
-  .field-input:focus{border-color:var(--gold);box-shadow:0 0 18px rgba(201,168,76,.18);background:rgba(18,12,5,.95);}
+    .field-label{font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;color:var(--gold-dark);text-transform:uppercase;margin-bottom:8px;display:block;}
+    .field-input{width:100%;background:rgba(8,6,3,.85);border:1px solid rgba(201,168,76,.2);border-bottom:2px solid var(--gold-dark);
+      color:var(--parchment);font-family:'EB Garamond',serif;font-size:15px;padding:11px 14px;outline:none;transition:all .3s;margin-bottom:20px;}
+    .field-input:focus{border-color:var(--gold);box-shadow:0 0 18px rgba(201,168,76,.18);background:rgba(18,12,5,.95);}
 
-  .model-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
-  .model-opt{background:rgba(10,7,3,.8);border:1px solid rgba(201,168,76,.15);padding:12px;cursor:pointer;transition:all .3s;text-align:center;}
-  .model-opt:hover,.model-opt.active{border-color:var(--gold);background:rgba(30,20,8,.9);box-shadow:0 0 16px rgba(201,168,76,.15);}
-  .model-opt .m-name{font-family:'Cinzel',serif;font-size:12px;color:var(--gold);letter-spacing:1px;margin-bottom:3px;}
-  .model-opt .m-desc{font-size:11px;color:var(--parchment-dark);font-style:italic;}
+    .model-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
+    .model-opt{background:rgba(10,7,3,.8);border:1px solid rgba(201,168,76,.15);padding:12px;cursor:pointer;transition:all .3s;text-align:center;}
+    .model-opt:hover,.model-opt.active{border-color:var(--gold);background:rgba(30,20,8,.9);box-shadow:0 0 16px rgba(201,168,76,.15);}
+    .model-opt .m-name{font-family:'Cinzel',serif;font-size:12px;color:var(--gold);letter-spacing:1px;margin-bottom:3px;}
+    .model-opt .m-desc{font-size:11px;color:var(--parchment-dark);font-style:italic;}
 
-  .btn-gold{font-family:'Cinzel',serif;font-size:14px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
-    padding:16px 44px;border:none;cursor:pointer;
-    background:linear-gradient(135deg,#8a6c2a 0%,#c9a84c 50%,#8a6c2a 100%);
-    color:var(--ink);clip-path:polygon(12px 0%,100% 0%,calc(100% - 12px) 100%,0% 100%);
-    transition:all .3s;width:100%;}
-  .btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(201,168,76,.4);filter:brightness(1.1);}
-  .btn-gold:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+    .btn-gold{font-family:'Cinzel',serif;font-size:14px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+      padding:16px 44px;border:none;cursor:pointer;
+      background:linear-gradient(135deg,#8a6c2a 0%,#c9a84c 50%,#8a6c2a 100%);
+      color:var(--ink);clip-path:polygon(12px 0%,100% 0%,calc(100% - 12px) 100%,0% 100%);
+      transition:all .3s;width:100%;}
+    .btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(201,168,76,.4);filter:brightness(1.1);}
+    .btn-gold:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 
-  .api-status{margin-top:14px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;text-align:center;min-height:18px;}
-  .status-ok{color:var(--green);} .status-err{color:#e63333;} .status-checking{color:var(--gold-dark);}
+    .api-status{margin-top:14px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;text-align:center;min-height:18px;}
+    .status-ok{color:var(--green);} .status-err{color:#e63333;} .status-checking{color:var(--gold-dark);}
 
-  /* ── CHARACTER SCREEN ── */
-  #charScreen{background:linear-gradient(180deg,#060402 0%,#0e0a05 100%);padding:40px 20px;justify-content:flex-start;align-items:stretch;}
-  .s-title{font-family:'Cinzel Decorative',serif;font-size:clamp(20px,4vw,34px);color:var(--gold);text-align:center;margin-bottom:6px;filter:drop-shadow(0 0 18px rgba(201,168,76,.35));}
-  .s-sub{font-family:'Cinzel',serif;font-size:12px;color:var(--gold-dark);text-align:center;letter-spacing:4px;margin-bottom:36px;}
+    /* ── CHARACTER SCREEN ── */
+    #charScreen{background:linear-gradient(180deg,#060402 0%,#0e0a05 100%);padding:40px 20px;justify-content:flex-start;align-items:stretch;}
+    .s-title{font-family:'Cinzel Decorative',serif;font-size:clamp(20px,4vw,34px);color:var(--gold);text-align:center;margin-bottom:6px;filter:drop-shadow(0 0 18px rgba(201,168,76,.35));}
+    .s-sub{font-family:'Cinzel',serif;font-size:12px;color:var(--gold-dark);text-align:center;letter-spacing:4px;margin-bottom:36px;}
 
-  .race-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;max-width:960px;margin:0 auto 32px;width:100%;}
-  .r-card{background:linear-gradient(135deg,rgba(18,12,5,.92),rgba(26,18,8,.92));border:1px solid rgba(201,168,76,.18);padding:22px;cursor:pointer;transition:all .35s;position:relative;}
-  .r-card:hover,.r-card.sel{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 10px 32px rgba(201,168,76,.18);}
-  .r-card.sel{border-left:3px solid var(--gold);}
-  .r-icon{font-size:34px;margin-bottom:10px;display:block;}
-  .r-name{font-family:'Cinzel',serif;font-size:16px;color:var(--gold);font-weight:700;margin-bottom:5px;}
-  .r-desc{font-size:13px;color:var(--parchment-dark);line-height:1.6;font-style:italic;margin-bottom:10px;}
-  .r-tags{display:flex;flex-wrap:wrap;gap:5px;}
-  .r-tag{font-family:'Cinzel',serif;font-size:9px;padding:2px 7px;border:1px solid var(--gold-dark);color:var(--gold);letter-spacing:1px;}
+    .race-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;max-width:960px;margin:0 auto 32px;width:100%;}
+    .r-card{background:linear-gradient(135deg,rgba(18,12,5,.92),rgba(26,18,8,.92));border:1px solid rgba(201,168,76,.18);padding:22px;cursor:pointer;transition:all .35s;position:relative;}
+    .r-card:hover,.r-card.sel{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 10px 32px rgba(201,168,76,.18);}
+    .r-card.sel{border-left:3px solid var(--gold);}
+    .r-icon{font-size:34px;margin-bottom:10px;display:block;}
+    .r-name{font-family:'Cinzel',serif;font-size:16px;color:var(--gold);font-weight:700;margin-bottom:5px;}
+    .r-desc{font-size:13px;color:var(--parchment-dark);line-height:1.6;font-style:italic;margin-bottom:10px;}
+    .r-tags{display:flex;flex-wrap:wrap;gap:5px;}
+    .r-tag{font-family:'Cinzel',serif;font-size:9px;padding:2px 7px;border:1px solid var(--gold-dark);color:var(--gold);letter-spacing:1px;}
 
-  .form-wrap{max-width:480px;margin:0 auto;width:100%;}
-  .class-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
-  .c-card{background:rgba(12,8,3,.85);border:1px solid rgba(201,168,76,.15);padding:14px;cursor:pointer;transition:all .3s;text-align:center;}
-  .c-card:hover,.c-card.sel{border-color:var(--gold);background:rgba(25,18,8,.95);}
-  .c-card.sel{border-left:2px solid var(--gold);}
-  .c-icon{font-size:22px;margin-bottom:5px;display:block;}
-  .c-name{font-family:'Cinzel',serif;font-size:13px;color:var(--gold);margin-bottom:2px;}
-  .c-hint{font-size:11px;color:var(--parchment-dark);font-style:italic;}
+    .form-wrap{max-width:480px;margin:0 auto;width:100%;}
+    .class-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+    .c-card{background:rgba(12,8,3,.85);border:1px solid rgba(201,168,76,.15);padding:14px;cursor:pointer;transition:all .3s;text-align:center;}
+    .c-card:hover,.c-card.sel{border-color:var(--gold);background:rgba(25,18,8,.95);}
+    .c-card.sel{border-left:2px solid var(--gold);}
+    .c-icon{font-size:22px;margin-bottom:5px;display:block;}
+    .c-name{font-family:'Cinzel',serif;font-size:13px;color:var(--gold);margin-bottom:2px;}
+    .c-hint{font-size:11px;color:var(--parchment-dark);font-style:italic;}
 
-  /* ── GAME SCREEN ── */
-  #gameScreen{background:#070503;padding:0;align-items:stretch;justify-content:flex-start;min-height:100vh;}
-  .game-wrap{display:grid;grid-template-columns:270px 1fr 250px;grid-template-rows:auto 1fr;min-height:100vh;max-width:1380px;margin:0 auto;width:100%;}
-  @media(max-width:880px){.game-wrap{grid-template-columns:1fr;}.panel-l,.panel-r{display:none;}}
+    /* ── GAME SCREEN ── */
+    #gameScreen{background:#070503;padding:0;align-items:stretch;justify-content:flex-start;min-height:100vh;}
 
-  .topbar{grid-column:1/-1;background:linear-gradient(90deg,#090703,#110d06,#090703);border-bottom:1px solid rgba(201,168,76,.28);
-    padding:11px 22px;display:flex;align-items:center;justify-content:space-between;}
-  .topbar-title{font-family:'Cinzel Decorative',serif;font-size:clamp(12px,2vw,17px);color:var(--gold);filter:drop-shadow(0 0 8px rgba(201,168,76,.35));}
-  .chapter-tag{font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;color:var(--gold-dark);}
-  .topbar-right{display:flex;gap:8px;align-items:center;}
-  .icon-btn{background:none;border:1px solid rgba(201,168,76,.25);color:var(--gold-dark);padding:5px 11px;cursor:pointer;font-size:13px;transition:all .25s;}
-  .icon-btn:hover{border-color:var(--gold);color:var(--gold);}
+    /* ── DESKTOP LAYOUT ── */
+    .game-wrap{display:grid;grid-template-columns:270px 1fr 250px;grid-template-rows:auto 1fr;min-height:100vh;max-width:1380px;margin:0 auto;width:100%;}
 
-  .panel-l,.panel-r{background:linear-gradient(180deg,rgba(9,6,2,.98),rgba(13,9,4,.98));border-right:1px solid rgba(201,168,76,.13);padding:18px;overflow-y:auto;}
-  .panel-r{border-right:none;border-left:1px solid rgba(201,168,76,.13);}
-  .panel-l::-webkit-scrollbar,.panel-r::-webkit-scrollbar{width:3px;}
-  .panel-l::-webkit-scrollbar-thumb,.panel-r::-webkit-scrollbar-thumb{background:var(--gold-dark);}
+    .topbar{grid-column:1/-1;background:linear-gradient(90deg,#090703,#110d06,#090703);border-bottom:1px solid rgba(201,168,76,.28);
+      padding:11px 18px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+    .topbar-title{font-family:'Cinzel Decorative',serif;font-size:clamp(11px,2vw,17px);color:var(--gold);filter:drop-shadow(0 0 8px rgba(201,168,76,.35));white-space:nowrap;}
+    .chapter-tag{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--gold-dark);display:none;}
+    .topbar-right{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+    .icon-btn{background:none;border:1px solid rgba(201,168,76,.25);color:var(--gold-dark);padding:5px 10px;cursor:pointer;font-size:12px;transition:all .25s;white-space:nowrap;}
+    .icon-btn:hover{border-color:var(--gold);color:var(--gold);}
 
-  .p-section{font-family:'Cinzel',serif;font-size:10px;letter-spacing:4px;color:var(--gold-dark);text-transform:uppercase;margin-bottom:12px;padding-bottom:7px;border-bottom:1px solid rgba(201,168,76,.18);margin-top:18px;}
-  .p-section:first-of-type{margin-top:0;}
+    /* Sidebar panels */
+    .panel-l,.panel-r{background:linear-gradient(180deg,rgba(9,6,2,.98),rgba(13,9,4,.98));border-right:1px solid rgba(201,168,76,.13);padding:18px;overflow-y:auto;}
+    .panel-r{border-right:none;border-left:1px solid rgba(201,168,76,.13);}
+    .panel-l::-webkit-scrollbar,.panel-r::-webkit-scrollbar{width:3px;}
+    .panel-l::-webkit-scrollbar-thumb,.panel-r::-webkit-scrollbar-thumb{background:var(--gold-dark);}
 
-  .avatar-wrap{position:relative;width:76px;height:76px;margin:0 auto 10px;}
-  .avatar-wrap svg{transform:rotate(-90deg);}
-  .avatar-inner{position:absolute;inset:8px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;background:radial-gradient(circle,rgba(201,168,76,.1),rgba(8,5,2,.9));}
+    .p-section{font-family:'Cinzel',serif;font-size:10px;letter-spacing:4px;color:var(--gold-dark);text-transform:uppercase;margin-bottom:12px;padding-bottom:7px;border-bottom:1px solid rgba(201,168,76,.18);margin-top:18px;}
+    .p-section:first-of-type{margin-top:0;}
 
-  .char-name{font-family:'Cinzel',serif;font-size:14px;color:var(--gold);text-align:center;font-weight:700;margin-bottom:3px;}
-  .char-sub{font-size:12px;color:var(--parchment-dark);text-align:center;font-style:italic;margin-bottom:14px;}
+    /* Avatar ring */
+    .avatar-wrap{position:relative;width:76px;height:76px;margin:0 auto 10px;}
+    .avatar-wrap svg{transform:rotate(-90deg);}
+    .avatar-inner{position:absolute;inset:8px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;background:radial-gradient(circle,rgba(201,168,76,.1),rgba(8,5,2,.9));}
 
-  .attr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:14px;}
-  .attr-cell{text-align:center;padding:7px 3px;border:1px solid rgba(201,168,76,.12);background:rgba(201,168,76,.03);}
-  .attr-v{font-family:'Cinzel Decorative',serif;font-size:16px;color:var(--gold);display:block;}
-  .attr-n{font-family:'Cinzel',serif;font-size:7px;color:var(--parchment-dark);letter-spacing:1px;text-transform:uppercase;display:block;}
+    .char-name{font-family:'Cinzel',serif;font-size:14px;color:var(--gold);text-align:center;font-weight:700;margin-bottom:3px;}
+    .char-sub{font-size:12px;color:var(--parchment-dark);text-align:center;font-style:italic;margin-bottom:14px;}
 
-  .bar-group{margin-bottom:10px;}
-  .bar-label{display:flex;justify-content:space-between;font-family:'Cinzel',serif;font-size:9px;color:var(--parchment-dark);letter-spacing:1px;margin-bottom:3px;}
-  .bar-track{height:4px;background:rgba(201,168,76,.08);border-radius:2px;overflow:hidden;}
-  .bar-fill{height:100%;border-radius:2px;transition:width 1s ease;}
-  .hp-fill{background:linear-gradient(90deg,#7a1515,#e03030);}
-  .mp-fill{background:linear-gradient(90deg,#153a7a,#3070dd);}
-  .xp-fill{background:linear-gradient(90deg,#3a6015,#70c030);}
+    .attr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:14px;}
+    .attr-cell{text-align:center;padding:7px 3px;border:1px solid rgba(201,168,76,.12);background:rgba(201,168,76,.03);}
+    .attr-v{font-family:'Cinzel Decorative',serif;font-size:16px;color:var(--gold);display:block;}
+    .attr-n{font-family:'Cinzel',serif;font-size:7px;color:var(--parchment-dark);letter-spacing:1px;text-transform:uppercase;display:block;}
 
-  .inv-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border:1px solid rgba(201,168,76,.08);margin-bottom:5px;font-size:12px;color:var(--parchment-dark);transition:all .2s;}
-  .inv-item:hover{border-color:rgba(201,168,76,.25);background:rgba(201,168,76,.04);}
+    .bar-group{margin-bottom:10px;}
+    .bar-label{display:flex;justify-content:space-between;font-family:'Cinzel',serif;font-size:9px;color:var(--parchment-dark);letter-spacing:1px;margin-bottom:3px;}
+    .bar-track{height:4px;background:rgba(201,168,76,.08);border-radius:2px;overflow:hidden;}
+    .bar-fill{height:100%;border-radius:2px;transition:width 1s ease;}
+    .hp-fill{background:linear-gradient(90deg,#7a1515,#e03030);}
+    .mp-fill{background:linear-gradient(90deg,#153a7a,#3070dd);}
+    .xp-fill{background:linear-gradient(90deg,#3a6015,#70c030);}
 
-  .loc-box{background:rgba(201,168,76,.03);border:1px solid rgba(201,168,76,.13);padding:11px;margin-bottom:12px;}
-  .loc-name{font-family:'Cinzel',serif;font-size:13px;color:var(--gold);margin-bottom:4px;}
-  .loc-desc{font-size:11px;color:var(--parchment-dark);font-style:italic;line-height:1.6;}
+    .inv-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border:1px solid rgba(201,168,76,.08);margin-bottom:5px;font-size:12px;color:var(--parchment-dark);transition:all .2s;}
+    .inv-item:hover,.inv-item:active{border-color:rgba(201,168,76,.25);background:rgba(201,168,76,.04);}
 
-  .comp-item{display:flex;align-items:center;gap:7px;padding:6px 7px;border:1px solid rgba(201,168,76,.09);margin-bottom:5px;}
-  .comp-name{font-family:'Cinzel',serif;font-size:11px;color:var(--gold);}
-  .comp-status{font-size:10px;color:var(--green);}
+    .loc-box{background:rgba(201,168,76,.03);border:1px solid rgba(201,168,76,.13);padding:11px;margin-bottom:12px;}
+    .loc-name{font-family:'Cinzel',serif;font-size:13px;color:var(--gold);margin-bottom:4px;}
+    .loc-desc{font-size:11px;color:var(--parchment-dark);font-style:italic;line-height:1.6;}
 
-  .quest-item{padding:9px;border-left:2px solid var(--gold-dark);margin-bottom:9px;background:rgba(201,168,76,.02);}
-  .quest-t{font-family:'Cinzel',serif;font-size:11px;color:var(--gold);margin-bottom:3px;}
-  .quest-d{font-size:11px;color:var(--parchment-dark);line-height:1.5;font-style:italic;}
+    .comp-item{display:flex;align-items:center;gap:7px;padding:6px 7px;border:1px solid rgba(201,168,76,.09);margin-bottom:5px;}
+    .comp-name{font-family:'Cinzel',serif;font-size:11px;color:var(--gold);}
+    .comp-status{font-size:10px;color:var(--green);}
 
-  .rumor{padding:7px;border-left:1px solid rgba(201,168,76,.25);margin-bottom:7px;font-size:11px;color:var(--parchment-dark);font-style:italic;line-height:1.5;}
+    .quest-item{padding:9px;border-left:2px solid var(--gold-dark);margin-bottom:9px;background:rgba(201,168,76,.02);}
+    .quest-t{font-family:'Cinzel',serif;font-size:11px;color:var(--gold);margin-bottom:3px;}
+    .quest-d{font-size:11px;color:var(--parchment-dark);line-height:1.5;font-style:italic;}
 
-  /* Story */
-  .story-col{display:flex;flex-direction:column;background:linear-gradient(180deg,#090603,#0c0804);min-height:0;}
-  .story-scroll{flex:1;overflow-y:auto;padding:28px 30px;scroll-behavior:smooth;}
-  .story-scroll::-webkit-scrollbar{width:3px;}
-  .story-scroll::-webkit-scrollbar-thumb{background:var(--gold-dark);}
+    .rumor{padding:7px;border-left:1px solid rgba(201,168,76,.25);margin-bottom:7px;font-size:11px;color:var(--parchment-dark);font-style:italic;line-height:1.5;}
 
-  .story-block{animation:reveal .7s ease forwards;opacity:0;transform:translateY(8px);margin-bottom:22px;}
-  @keyframes reveal{to{opacity:1;transform:translateY(0)}}
+    /* Story */
+    .story-col{display:flex;flex-direction:column;background:linear-gradient(180deg,#090603,#0c0804);min-height:0;}
+    .story-scroll{flex:1;overflow-y:auto;padding:24px 26px;scroll-behavior:smooth;}
+    .story-scroll::-webkit-scrollbar{width:3px;}
+    .story-scroll::-webkit-scrollbar-thumb{background:var(--gold-dark);}
 
-  .ch-header{text-align:center;margin-bottom:24px;padding:18px;}
-  .ch-header::before,.ch-header::after{content:'── ✦ ──';display:block;color:var(--gold-dark);font-size:11px;letter-spacing:5px;}
-  .ch-title{font-family:'Cinzel Decorative',serif;font-size:clamp(16px,2.8vw,25px);color:var(--gold);margin:9px 0;filter:drop-shadow(0 0 12px rgba(201,168,76,.3));}
-  .ch-sub{font-family:'Cinzel',serif;font-size:12px;color:var(--gold-dark);letter-spacing:3px;font-style:italic;}
+    .story-block{animation:reveal .7s ease forwards;opacity:0;transform:translateY(8px);margin-bottom:20px;}
+    @keyframes reveal{to{opacity:1;transform:translateY(0)}}
 
-  .narr{font-size:clamp(15px,2vw,17px);line-height:1.95;color:var(--parchment);text-align:justify;margin-bottom:14px;}
-  .narr em{color:var(--gold-light);font-style:italic;}
+    .ch-header{text-align:center;margin-bottom:20px;padding:14px;}
+    .ch-header::before,.ch-header::after{content:'── ✦ ──';display:block;color:var(--gold-dark);font-size:11px;letter-spacing:5px;}
+    .ch-title{font-family:'Cinzel Decorative',serif;font-size:clamp(15px,2.8vw,24px);color:var(--gold);margin:9px 0;filter:drop-shadow(0 0 12px rgba(201,168,76,.3));}
+    .ch-sub{font-family:'Cinzel',serif;font-size:11px;color:var(--gold-dark);letter-spacing:3px;font-style:italic;}
 
-  .dlg{border-left:3px solid var(--gold-dark);padding:13px 18px;margin:14px 0;background:rgba(201,168,76,.04);}
-  .dlg-who{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold);margin-bottom:5px;}
-  .dlg-text{font-size:clamp(15px,2vw,16px);line-height:1.8;color:var(--parchment);font-style:italic;}
+    .narr{font-size:clamp(15px,2vw,17px);line-height:1.9;color:var(--parchment);text-align:justify;margin-bottom:14px;}
+    .narr em{color:var(--gold-light);font-style:italic;}
 
-  .loc-banner{display:flex;align-items:center;gap:10px;border:1px solid rgba(201,168,76,.25);padding:11px 14px;margin-bottom:12px;background:rgba(18,12,5,.9);}
-  .loc-banner-icon{font-size:20px;}
-  .loc-banner-name{font-family:'Cinzel',serif;font-size:13px;color:var(--gold);}
-  .loc-banner-desc{font-size:11px;color:var(--parchment-dark);font-style:italic;}
+    .dlg{border-left:3px solid var(--gold-dark);padding:12px 16px;margin:14px 0;background:rgba(201,168,76,.04);}
+    .dlg-who{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold);margin-bottom:5px;}
+    .dlg-text{font-size:clamp(14px,2vw,16px);line-height:1.8;color:var(--parchment);font-style:italic;}
 
-  .combat-box{border:1px solid var(--crimson);padding:18px;margin:14px 0;background:rgba(139,26,26,.07);animation:shake .45s ease;}
-  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
-  .combat-head{font-family:'Cinzel',serif;font-size:13px;color:#e03030;letter-spacing:3px;margin-bottom:11px;}
-  .combat-row{display:flex;align-items:center;gap:12px;}
-  .d20{font-family:'Cinzel Decorative',serif;font-size:26px;color:var(--gold);width:48px;height:48px;border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;transform:rotate(45deg);flex-shrink:0;}
-  .d20 span{transform:rotate(-45deg);}
-  .combat-detail{font-size:13px;color:var(--parchment-dark);line-height:1.7;}
+    .loc-banner{display:flex;align-items:center;gap:10px;border:1px solid rgba(201,168,76,.25);padding:10px 14px;margin-bottom:12px;background:rgba(18,12,5,.9);}
+    .loc-banner-icon{font-size:18px;flex-shrink:0;}
+    .loc-banner-name{font-family:'Cinzel',serif;font-size:12px;color:var(--gold);}
+    .loc-banner-desc{font-size:11px;color:var(--parchment-dark);font-style:italic;}
 
-  .typing{display:flex;align-items:center;gap:7px;padding:14px;font-family:'Cinzel',serif;font-size:11px;color:var(--gold-dark);letter-spacing:2px;}
-  .tdot{width:5px;height:5px;background:var(--gold);border-radius:50%;animation:tdot 1.3s ease-in-out infinite;}
-  .tdot:nth-child(2){animation-delay:.18s}.tdot:nth-child(3){animation-delay:.36s}
-  @keyframes tdot{0%,80%,100%{transform:scale(.55);opacity:.35}40%{transform:scale(1);opacity:1}}
+    .combat-box{border:1px solid var(--crimson);padding:16px;margin:14px 0;background:rgba(139,26,26,.07);animation:shake .45s ease;}
+    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+    .combat-head{font-family:'Cinzel',serif;font-size:12px;color:#e03030;letter-spacing:3px;margin-bottom:10px;}
+    .combat-row{display:flex;align-items:center;gap:12px;}
+    .d20{font-family:'Cinzel Decorative',serif;font-size:24px;color:var(--gold);width:44px;height:44px;border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;transform:rotate(45deg);flex-shrink:0;}
+    .d20 span{transform:rotate(-45deg);}
+    .combat-detail{font-size:12px;color:var(--parchment-dark);line-height:1.7;}
 
-  .choices-wrap{padding:18px 28px;border-top:1px solid rgba(201,168,76,.14);background:rgba(8,5,2,.96);}
-  .choices-label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:4px;color:var(--gold-dark);text-transform:uppercase;margin-bottom:12px;}
-  .choices-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px;margin-bottom:14px;}
-  .ch-btn{background:rgba(13,9,4,.92);border:1px solid rgba(201,168,76,.22);color:var(--parchment);font-family:'EB Garamond',serif;font-size:14px;
-    padding:13px 16px;cursor:pointer;text-align:left;transition:all .28s;line-height:1.5;position:relative;overflow:hidden;}
-  .ch-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(201,168,76,.09),transparent);transition:left .4s;}
-  .ch-btn:hover{border-color:var(--gold);color:var(--gold-light);transform:translateX(3px);}
-  .ch-btn:hover::before{left:100%;}
-  .ch-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
-  .ch-num{font-family:'Cinzel',serif;font-size:9px;color:var(--gold-dark);letter-spacing:2px;margin-bottom:3px;display:block;}
+    .typing{display:flex;align-items:center;gap:7px;padding:14px;font-family:'Cinzel',serif;font-size:11px;color:var(--gold-dark);letter-spacing:2px;}
+    .tdot{width:5px;height:5px;background:var(--gold);border-radius:50%;animation:tdot 1.3s ease-in-out infinite;}
+    .tdot:nth-child(2){animation-delay:.18s}.tdot:nth-child(3){animation-delay:.36s}
+    @keyframes tdot{0%,80%,100%{transform:scale(.55);opacity:.35}40%{transform:scale(1);opacity:1}}
 
-  .custom-row{display:flex;gap:8px;}
-  .custom-inp{flex:1;background:rgba(8,5,2,.9);border:1px solid rgba(201,168,76,.18);border-bottom:2px solid var(--gold-dark);
-    color:var(--parchment);font-family:'EB Garamond',serif;font-size:14px;padding:9px 13px;outline:none;transition:all .3s;}
-  .custom-inp:focus{border-color:var(--gold);box-shadow:0 0 14px rgba(201,168,76,.14);}
-  .custom-inp:disabled{opacity:.4;}
-  .send-btn{background:linear-gradient(135deg,#8a6c2a,#c9a84c);border:none;color:var(--ink);font-family:'Cinzel',serif;
-    font-size:11px;letter-spacing:2px;padding:9px 18px;cursor:pointer;font-weight:700;transition:all .3s;white-space:nowrap;}
-  .send-btn:hover{filter:brightness(1.15);transform:translateY(-1px);}
-  .send-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+    /* Choices */
+    .choices-wrap{padding:14px 18px;border-top:1px solid rgba(201,168,76,.14);background:rgba(8,5,2,.97);}
+    .choices-label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:4px;color:var(--gold-dark);text-transform:uppercase;margin-bottom:10px;}
+    .choices-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:7px;margin-bottom:12px;}
+    .ch-btn{background:rgba(13,9,4,.92);border:1px solid rgba(201,168,76,.22);color:var(--parchment);font-family:'EB Garamond',serif;font-size:14px;
+      padding:12px 14px;cursor:pointer;text-align:left;transition:all .25s;line-height:1.5;position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent;}
+    .ch-btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(201,168,76,.09),transparent);transition:left .4s;}
+    .ch-btn:hover,.ch-btn:active{border-color:var(--gold);color:var(--gold-light);}
+    .ch-btn:hover::before{left:100%;}
+    .ch-btn:disabled{opacity:.4;cursor:not-allowed;}
+    .ch-num{font-family:'Cinzel',serif;font-size:9px;color:var(--gold-dark);letter-spacing:2px;margin-bottom:3px;display:block;}
 
-  #diceOverlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:500;display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;}
-  .dice-num{font-family:'Cinzel Decorative',serif;font-size:90px;color:var(--gold);filter:drop-shadow(0 0 28px rgba(201,168,76,.8));}
-  .dice-lbl{font-family:'Cinzel',serif;font-size:15px;letter-spacing:4px;color:var(--parchment-dark);text-transform:uppercase;}
+    .custom-row{display:flex;gap:8px;}
+    .custom-inp{flex:1;background:rgba(8,5,2,.9);border:1px solid rgba(201,168,76,.18);border-bottom:2px solid var(--gold-dark);
+      color:var(--parchment);font-family:'EB Garamond',serif;font-size:16px;padding:9px 12px;outline:none;transition:all .3s;min-width:0;}
+    .custom-inp:focus{border-color:var(--gold);box-shadow:0 0 14px rgba(201,168,76,.14);}
+    .custom-inp:disabled{opacity:.4;}
+    .send-btn{background:linear-gradient(135deg,#8a6c2a,#c9a84c);border:none;color:var(--ink);font-family:'Cinzel',serif;
+      font-size:11px;letter-spacing:2px;padding:9px 16px;cursor:pointer;font-weight:700;transition:all .3s;white-space:nowrap;flex-shrink:0;}
+    .send-btn:active{filter:brightness(1.2);}
+    .send-btn:disabled{opacity:.4;cursor:not-allowed;}
 
-  .toast{position:fixed;top:72px;right:18px;z-index:900;background:linear-gradient(135deg,rgba(28,18,7,.98),rgba(18,12,4,.98));
-    border:1px solid var(--gold);padding:13px 18px;max-width:280px;animation:toastIn .35s ease forwards;font-size:13px;}
-  .toast-t{font-family:'Cinzel',serif;font-size:11px;color:var(--gold);letter-spacing:2px;margin-bottom:3px;}
-  @keyframes toastIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+    /* Dice & Toast */
+    #diceOverlay{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:500;display:none;align-items:center;justify-content:center;flex-direction:column;gap:18px;}
+    .dice-num{font-family:'Cinzel Decorative',serif;font-size:clamp(60px,15vw,90px);color:var(--gold);filter:drop-shadow(0 0 28px rgba(201,168,76,.8));}
+    .dice-lbl{font-family:'Cinzel',serif;font-size:14px;letter-spacing:4px;color:var(--parchment-dark);text-transform:uppercase;}
 
-  @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .toast{position:fixed;top:auto;bottom:80px;left:50%;transform:translateX(-50%);z-index:900;
+      background:linear-gradient(135deg,rgba(28,18,7,.98),rgba(18,12,4,.98));
+      border:1px solid var(--gold);padding:12px 18px;min-width:220px;max-width:90vw;text-align:center;
+      animation:toastUp .35s ease forwards;font-size:13px;white-space:nowrap;}
+    .toast-t{font-family:'Cinzel',serif;font-size:11px;color:var(--gold);letter-spacing:2px;margin-bottom:3px;}
+    @keyframes toastUp{from{transform:translateX(-50%) translateY(20px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
 
-  .levelup-flash{position:fixed;inset:0;background:rgba(201,168,76,.12);z-index:400;pointer-events:none;animation:flash .6s ease forwards;}
-  @keyframes flash{0%{opacity:1}100%{opacity:0}}
-</style>
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .levelup-flash{position:fixed;inset:0;background:rgba(201,168,76,.12);z-index:400;pointer-events:none;animation:flash .6s ease forwards;}
+    @keyframes flash{0%{opacity:1}100%{opacity:0}}
+
+    .dice-face-btn{background:rgba(13,9,4,.9);border:1px solid rgba(201,168,76,.3);color:var(--parchment-dark);
+      font-family:'Cinzel',serif;font-size:13px;padding:14px 8px;cursor:pointer;transition:all .2s;letter-spacing:1px;}
+    .dice-face-btn:active{background:rgba(201,168,76,.15);border-color:var(--gold);color:var(--gold);transform:scale(.95);}
+
+    /* ═══════════════════════════════════
+       MOBILE — Bottom Tab Navigation
+    ═══════════════════════════════════ */
+    /* Mobile panel drawer */
+    .mob-panel{
+      display:none; /* hidden on desktop */
+      position:fixed; inset:0; z-index:300;
+      background:linear-gradient(180deg,rgba(9,6,2,.99),rgba(13,9,4,.99));
+      overflow-y:auto; padding:70px 20px 100px;
+      transform:translateX(100%); transition:transform .32s cubic-bezier(.4,0,.2,1);
+    }
+    .mob-panel.open{ transform:translateX(0); }
+    .mob-panel-close{
+      position:fixed; top:14px; right:16px; z-index:310;
+      background:none; border:1px solid rgba(201,168,76,.3);
+      color:var(--gold); font-size:18px; width:36px; height:36px;
+      cursor:pointer; display:none; align-items:center; justify-content:center;
+    }
+    .mob-panel.open ~ .mob-panel-close,
+    .mob-panel-close.visible{ display:flex; }
+
+    /* Bottom tab bar */
+    .bottom-tabs{
+      display:none;
+      position:fixed; bottom:0; left:0; right:0; z-index:200;
+      background:linear-gradient(180deg,rgba(5,3,1,.97),rgba(10,7,3,.99));
+      border-top:1px solid rgba(201,168,76,.25);
+      height:62px;
+      grid-template-columns:repeat(4,1fr);
+    }
+    .tab-btn{
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      gap:3px; background:none; border:none; cursor:pointer;
+      color:var(--gold-dark); font-family:'Cinzel',serif; font-size:9px;
+      letter-spacing:1px; text-transform:uppercase; padding:6px 4px;
+      transition:all .2s; -webkit-tap-highlight-color:transparent;
+      border-top:2px solid transparent;
+    }
+    .tab-btn .tab-icon{ font-size:20px; line-height:1; }
+    .tab-btn.active{ color:var(--gold); border-top-color:var(--gold); }
+    .tab-btn:active{ transform:scale(.95); }
+
+    /* Compact mobile stats bar (shown above story on mobile) */
+    .mob-stats-bar{
+      display:none;
+      background:rgba(9,6,2,.97); border-bottom:1px solid rgba(201,168,76,.15);
+      padding:8px 14px; gap:10px; align-items:center; flex-wrap:wrap;
+    }
+    .mob-stat{display:flex;align-items:center;gap:5px;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;}
+    .mob-stat-icon{font-size:13px;}
+    .mob-stat-bar-track{width:44px;height:5px;background:rgba(201,168,76,.1);border-radius:3px;overflow:hidden;}
+    .mob-stat-bar-fill{height:100%;border-radius:3px;transition:width .8s;}
+    .mob-stat-val{font-size:10px;color:var(--parchment-dark);min-width:22px;}
+    .mob-char-badge{
+      display:flex;align-items:center;gap:8px;
+      background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);
+      padding:5px 10px;border-radius:2px;cursor:pointer;
+    }
+    .mob-char-icon{font-size:22px;}
+    .mob-char-info{line-height:1.3;}
+    .mob-char-name{font-family:'Cinzel',serif;font-size:11px;color:var(--gold);font-weight:700;}
+    .mob-char-lvl{font-size:10px;color:var(--parchment-dark);font-style:italic;}
+
+    /* ── RESPONSIVE BREAKPOINTS ── */
+    @media(max-width:860px){
+      /* Hide desktop panels */
+      .panel-l,.panel-r{ display:none; }
+      .chapter-tag{ display:block; }
+
+      /* Full-width game wrap */
+      .game-wrap{
+        grid-template-columns:1fr;
+        grid-template-rows:auto auto 1fr;
+        padding-bottom:62px; /* space for tab bar */
+      }
+
+      /* Show mobile elements */
+      .mob-stats-bar{ display:flex; }
+      .bottom-tabs{ display:grid; }
+      .mob-panel{ display:block; }
+
+      /* Story adjustments */
+      .story-scroll{ padding:16px 16px; }
+      .choices-wrap{ padding:12px 14px; }
+      .choices-grid{ grid-template-columns:1fr 1fr; gap:6px; }
+      .ch-btn{ font-size:13px; padding:10px 12px; }
+      .narr{ font-size:15px; text-align:left; }
+
+      /* Topbar tighter */
+      .topbar{ padding:9px 14px; }
+      .topbar-title{ font-size:13px; }
+      .icon-btn{ font-size:11px; padding:4px 8px; }
+    }
+
+    @media(max-width:480px){
+      /* Single column choices on very small screens */
+      .choices-grid{ grid-template-columns:1fr; }
+      .custom-row{ flex-wrap:wrap; }
+      .custom-inp{ font-size:15px; }
+      .send-btn{ width:100%; text-align:center; padding:10px; }
+      .topbar-title{ font-size:12px; }
+      .chapter-tag{ display:none; }
+    }
+  </style>
 </head>
 <body>
 
@@ -376,7 +490,33 @@
       </div>
     </div>
 
-    <!-- LEFT -->
+    <!-- ── MOBILE: compact stats bar ── -->
+    <div class="mob-stats-bar" id="mobStatsBar">
+      <div class="mob-char-badge" onclick="openPanel('char')">
+        <span class="mob-char-icon" id="mobCharIcon">🌿</span>
+        <div class="mob-char-info">
+          <div class="mob-char-name" id="mobCharName">—</div>
+          <div class="mob-char-lvl" id="mobCharLvl">Lv 1</div>
+        </div>
+      </div>
+      <div class="mob-stat">
+        <span class="mob-stat-icon">❤️</span>
+        <div class="mob-stat-bar-track"><div class="mob-stat-bar-fill hp-fill" id="mobHpBar" style="width:100%"></div></div>
+        <span class="mob-stat-val" id="mobHpVal">100</span>
+      </div>
+      <div class="mob-stat">
+        <span class="mob-stat-icon">✨</span>
+        <div class="mob-stat-bar-track"><div class="mob-stat-bar-fill mp-fill" id="mobMpBar" style="width:100%"></div></div>
+        <span class="mob-stat-val" id="mobMpVal">80</span>
+      </div>
+      <div class="mob-stat">
+        <span class="mob-stat-icon">⭐</span>
+        <div class="mob-stat-bar-track"><div class="mob-stat-bar-fill xp-fill" id="mobXpBar" style="width:0%"></div></div>
+        <span class="mob-stat-val" id="mobXpVal">0</span>
+      </div>
+    </div>
+
+    <!-- LEFT (desktop) -->
     <div class="panel-l">
       <div class="p-section" id="psChar">Your Character</div>
       <div class="avatar-wrap">
@@ -405,7 +545,7 @@
         <div class="bar-track"><div class="bar-fill mp-fill" id="mpBar" style="width:100%"></div></div>
       </div>
       <div class="bar-group">
-        <div class="bar-label"><span id="barXpLabel">LEGEND · Lv </span><span id="lvlTxt">1</span> &nbsp;<span id="xpTxt">0/100</span></div>
+        <div class="bar-label"><span id="barXpLabel">LEGEND · Lv </span><span id="lvlTxt">1</span>&nbsp;<span id="xpTxt">0/100</span></div>
         <div class="bar-track"><div class="bar-fill xp-fill" id="xpBar" style="width:0%"></div></div>
       </div>
       <div class="p-section" id="psInv">Inventory</div>
@@ -433,7 +573,7 @@
       </div>
     </div>
 
-    <!-- RIGHT -->
+    <!-- RIGHT (desktop) -->
     <div class="panel-r">
       <div class="p-section" id="psLoc">Location</div>
       <div class="loc-box"><div class="loc-name" id="locName">The Shire</div><div class="loc-desc" id="locDesc">Rolling green hills and warm hearths.</div></div>
@@ -445,8 +585,91 @@
       <div id="rumorList"></div>
     </div>
 
+  </div><!-- /game-wrap -->
+
+  <!-- ── MOBILE PANEL: Character & Inventory ── -->
+  <div class="mob-panel" id="panelChar">
+    <div class="p-section" style="margin-top:0">Character</div>
+    <div class="avatar-wrap" style="width:90px;height:90px;margin:0 auto 12px">
+      <svg width="90" height="90"><circle cx="45" cy="45" r="38" fill="none" stroke="rgba(201,168,76,.1)" stroke-width="4"/>
+        <circle id="hpRingMob" cx="45" cy="45" r="38" fill="none" stroke="#e03030" stroke-width="4" stroke-dasharray="239" stroke-dashoffset="0" stroke-linecap="round"/></svg>
+      <div class="avatar-inner" id="avatarIconMob" style="font-size:32px">🌿</div>
+    </div>
+    <div class="char-name" id="dispNameMob">—</div>
+    <div class="char-sub" id="dispRaceMob">—</div>
+    <div class="attr-grid" id="attrGridMob" style="margin-bottom:16px"></div>
+    <div class="bar-group">
+      <div class="bar-label"><span>VITALITY</span><span id="hpTxtMob">100/100</span></div>
+      <div class="bar-track" style="height:6px"><div class="bar-fill hp-fill" id="hpBarMob" style="width:100%"></div></div>
+    </div>
+    <div class="bar-group">
+      <div class="bar-label"><span>SPIRIT</span><span id="mpTxtMob">80/80</span></div>
+      <div class="bar-track" style="height:6px"><div class="bar-fill mp-fill" id="mpBarMob" style="width:100%"></div></div>
+    </div>
+    <div class="bar-group">
+      <div class="bar-label"><span>LEGEND · Lv <span id="lvlTxtMob">1</span></span><span id="xpTxtMob">0/100</span></div>
+      <div class="bar-track" style="height:6px"><div class="bar-fill xp-fill" id="xpBarMob" style="width:0%"></div></div>
+    </div>
+    <div class="p-section">Inventory</div>
+    <div id="invListMob"></div>
   </div>
-</div>
+
+  <!-- ── MOBILE PANEL: Map / Location / Quests / Rumours ── -->
+  <div class="mob-panel" id="panelMap">
+    <div class="p-section" style="margin-top:0" id="psLocMob">Location</div>
+    <div class="loc-box" style="margin-bottom:16px">
+      <div class="loc-name" id="locNameMob">The Shire</div>
+      <div class="loc-desc" id="locDescMob">Rolling green hills and warm hearths.</div>
+    </div>
+    <div class="p-section" id="psCompMob">Companions</div>
+    <div id="compListMob"><div style="font-size:12px;color:var(--parchment-dark);font-style:italic;padding:6px">—</div></div>
+    <div class="p-section" id="psQuestMob">Quest Log</div>
+    <div id="questLogMob"></div>
+    <div class="p-section" id="psRumorMob">Whispers & Rumours</div>
+    <div id="rumorListMob"></div>
+  </div>
+
+  <!-- ── MOBILE PANEL: Dice Roller ── -->
+  <div class="mob-panel" id="panelDice">
+    <div class="p-section" style="margin-top:0">Dice Roller</div>
+    <div style="text-align:center;padding:30px 0;">
+      <div id="diceResultBig" style="font-family:'Cinzel Decorative',serif;font-size:80px;color:var(--gold);filter:drop-shadow(0 0 20px rgba(201,168,76,.6));min-height:100px;display:flex;align-items:center;justify-content:center;">—</div>
+      <div id="diceResultLabel" style="font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;color:var(--gold-dark);margin-bottom:30px;min-height:20px;"></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
+        <button onclick="rollMob(4)"  class="dice-face-btn">🎲 D4</button>
+        <button onclick="rollMob(6)"  class="dice-face-btn">🎲 D6</button>
+        <button onclick="rollMob(8)"  class="dice-face-btn">🎲 D8</button>
+        <button onclick="rollMob(10)" class="dice-face-btn">🎲 D10</button>
+        <button onclick="rollMob(12)" class="dice-face-btn">🎲 D12</button>
+        <button onclick="rollMob(20)" class="dice-face-btn" style="border-color:var(--gold);color:var(--gold)">⚔ D20</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Close button (mobile panels) ── -->
+  <button class="mob-panel-close" id="panelCloseBtn" onclick="closePanel()">✕</button>
+
+  <!-- ── Bottom Tab Bar ── -->
+  <nav class="bottom-tabs" id="bottomTabs">
+    <button class="tab-btn active" id="tab-story" onclick="switchTab('story')">
+      <span class="tab-icon">📖</span>
+      <span id="tabStoryLabel">Story</span>
+    </button>
+    <button class="tab-btn" id="tab-char" onclick="switchTab('char')">
+      <span class="tab-icon">⚔️</span>
+      <span id="tabCharLabel">Charakter</span>
+    </button>
+    <button class="tab-btn" id="tab-map" onclick="switchTab('map')">
+      <span class="tab-icon">🗺️</span>
+      <span id="tabMapLabel">Karte</span>
+    </button>
+    <button class="tab-btn" id="tab-dice" onclick="switchTab('dice')">
+      <span class="tab-icon">🎲</span>
+      <span id="tabDiceLabel">Würfel</span>
+    </button>
+  </nav>
+
+</div><!-- /gameScreen -->
 
 <!-- DICE -->
 <div id="diceOverlay">
@@ -456,529 +679,539 @@
 </div>
 
 <script>
-/* ════════════════════════════════
-   TRANSLATIONS
-════════════════════════════════ */
-const T = {
-  en: {
-    langRune:'✦ The Third Age of Middle-earth ✦',
-    apiTitle:'Chronicles of<br>Middle-earth',
-    apiSub:'An AI-Powered Tale of Peril & Glory',
-    apiBoxTitle:'⟡ Connect the Oracle ⟡',
-    apiBoxDesc:'This game is powered by <strong style="color:var(--gold)">Groq AI</strong> — free and runs in your browser. Get your free key at <a href="https://console.groq.com" target="_blank">console.groq.com</a> (email only, no card).',
-    apiKeyLabel:'Your Groq API Key',
-    modelLabel:'Choose Your Narrator',
-    md1:'Richest storytelling', md2:'Fastest responses', md3:'Creative & diverse', md4:'Balanced quality',
-    apiBtn:'⚔ Forge Your Destiny ⚔',
-    apiFooter:'YOUR KEY STAYS IN YOUR BROWSER · NEVER SENT ANYWHERE ELSE',
-    verifying:'Verifying with Groq...',
-    keyOk:'✦ The oracle awakens — key accepted ✦',
-    keyErr:'Key rejected: ',
-    netErr:'Network error — check your connection.',
-    charTitle:'Choose Your Fate',
-    charSub:'⟡ The Races of Middle-earth ⟡',
-    nameLabel:'Your Name in Middle-earth',
-    namePlaceholder:'Speak your name to the stars...',
-    pathLabel:'Your Path',
-    beginBtn:'⟡ Enter Middle-earth ⟡',
-    alertName:'Please speak your name to the stars.',
-    alertRace:'Choose your race first.',
-    alertClass:'Choose your path.',
-    psChar:'Your Character', psInv:'Inventory', psLoc:'Location', psComp:'Companions', psQuest:'Quest Log', psRumor:'Whispers & Rumours',
-    anStr:'Strength', anDex:'Agility', anWis:'Wisdom', anLck:'Luck', anEnd:'Endurance', anMag:'Spirit',
-    barHp:'VITALITY', barMp:'SPIRIT', barXp:'LEGEND · Lv',
-    btnRoll:'Roll', btnKey:'Key',
-    choicesLabel:'⟡ What do you do? ⟡',
-    customPlaceholder:'Or write your own action...',
-    sendBtn:'DECLARE →',
-    typingText:'The Dungeon Master weaves your fate...',
-    diceLbl:'The dice of fate roll...',
-    combatWord:'COMBAT',
-    diceVictory:'VICTORY', diceWounded:'WOUNDED', diceCrit:'✦ CRITICAL SUCCESS ✦', diceFail:'✦ CRITICAL FAILURE ✦',
-    fortuneBlaze:'✦ A critical moment — fortune blazes bright. Your instincts are flawless.',
-    fatesCruel:'✦ Fate deals a cruel hand — something goes awry despite your best intent.',
-    diceFavour:'✦ The dice favour you — your approach is sound.',
-    fortuneSmiles:'FORTUNE SMILES', fatesWaver:'THE FATES WAVER',
-    aloneText:'You travel alone for now...',
-    questGathering:'The Gathering Darkness',
-    questGatheringDesc:'Strange wraiths haunt the eastern roads. The source of this shadow must be found before it devours all light.',
-    rumor1:'"They say Weathertop glows at night now. No man dares climb it."',
-    rumor2:'"A dwarf came through, raving about something waking beneath Moria. He didn\'t stay long."',
-    toastXP:'Legend Grows', toastXPMsg:'+{n} experience points',
-    toastItem:'Item Found', toastDmg:'Wound Suffered', toastHeal:'Restored',
-    toastComp:'Fellowship', toastCompMsg:'{n} joins your company!',
-    toastLvl:'⬆ Level Up!', toastLvlMsg:'You have reached Level {n}! Vitality fully restored.',
-    toastQuest:'New Quest',
-    actionPrefix:'» ',
-    chapterPrefix:'Chapter',
-    locShire:'The Shire', locShireDesc:'Rolling green hills and warm hearths. Yet even here, shadows gather at the edge of awareness.',
-    openChTitle:'The Shadow Stirs', openChSub:'Chapter I · A Quiet Land, Uneasy Dreams',
-    openLocName:'Bag End, The Shire', openLocDesc:'The most comfortable hole in Hobbiton — warmth, pipe-weed, and the smell of fresh bread. But the birds have gone silent.',
-    openNarr1:`The morning mist still clings to the rolling hills of the Shire when you are shaken awake by a dream unlike any before — not the comfortable sort involving second breakfasts and afternoon naps, but something ancient and terrible. A great <em>Eye, lidless and wreathed in fire</em>, turning on a tower of black iron, its gaze sweeping Middle-earth like a lighthouse of pure malice. You wake with your hand on your blade.`,
-    openNarr2:`You are <em>{name}</em>, {race}. The dream follows you into waking. When you step into the dewy morning, you find the birds have gone silent — not a thrush, not a sparrow. Three ravens sit on the fence post, watching with eyes too patient for birds. Then, rapid and urgent: a knock at your door.`,
-    openNarr3:`When you open it, <em>Gandalf the Grey</em> near-falls through the doorway — travel-stained, his great staff cracked at the tip, his ancient face stripped of all its usual warmth and mischief, replaced by something you have never seen there before. Genuine fear.`,
-    openDlg:`No time for pleasantries, my friend. A Palantír — one thought forever shattered at the Battle of the Morannon — has been recovered in the East. Whole. Uncorrupted. Or rather, corrupted in a new way, by a new will that has learned to wear old faces. Three lords of men have already fallen silent as stones. You must leave the Shire. Tonight. Before it finds your name.`,
-    openChoices:[
-      {action:'trust_gandalf',   label:'Trust Gandalf at once — ask what to bring and where to go.'},
-      {action:'question_gandalf',label:'Demand answers — why you? What makes one soul so necessary?'},
-      {action:'check_road',      label:'Something feels wrong beyond his words — step out and examine the road.'},
-      {action:'arm_yourself',    label:'Go back inside immediately to arm yourself and gather supplies.'}
-    ],
-    openHistory:'OPENING: Gandalf arrived at dawn with urgent warning about a recovered Palantír corrupting lords of men. Player must flee the Shire.',
-    chapterNames:['The Shadow Stirs','The Road Goes Ever On','Whispers in the Dark','The Council of Stars','The Eye Awakens — The Final Trial'],
-    defaultChoices:[
-      {action:'press_forward',label:'Press forward into the unknown darkness.'},
-      {action:'seek_shelter', label:'Find shelter and rest to recover strength.'},
-      {action:'investigate',  label:'Investigate the surroundings carefully.'},
-      {action:'use_wisdom',   label:'Draw on your lore and memories for guidance.'}
-    ],
-    fallbackNarr:'The road stretches endlessly before you, lined by ancient trees whose roots reach into ages past. Wind stirs the leaves and you sense, just at the edge of perception, <em>something watching</em> from the dark between the boughs.',
-    fallbackDlgWho:'A Weathered Traveller',
-    fallbackDlgText:'The east road is no longer safe for any who travel alone. Whatever stirs in the old ruins of Amon Sûl — it grows bolder with each passing night. I would not linger here if I were you.',
-    combatLegendary:'A legendary blow! The {e} is shattered by the force of it!',
-    combatWin:'Your strike lands true. The {e} staggers but fights on.',
-    combatDraw:'A desperate clash — neither gains the upper hand. Steel rings on steel.',
-    combatLoss:'The {e} parries with terrible strength and retaliates!',
-    systemLang:'English',
-    promptTurn:'Turn {t}. Player just chose: "{l}". Dice roll: {r}/20 ({outcome}). Continue the epic story. Remember location is {loc}.',
-    promptCombatWin:'Turn {t} — COMBAT AFTERMATH. Player just fought a {e} and won (dealt {d} damage). Write the aftermath and continue the story.',
-    promptCombatLoss:'Turn {t} — COMBAT AFTERMATH. Player just fought a {e} and was wounded (lost {d} HP, now at {hp}). Write the aftermath and continue the story.',
-    outcomeSuccess:'success', outcomeComplication:'complication', outcomeNeutral:'neutral',
-    races:[
-      {id:'hobbit',icon:'🌿',name:'Hobbit of the Shire',desc:'Small in stature but mighty in heart. Blessed with an uncanny luck that bends fate itself. The Ring-bearer\'s kin — resilient beyond all measure.',tags:['LUCK','STEALTH','RING RESISTANT']},
-      {id:'elf',  icon:'🌟',name:'Elf of Rivendell',desc:'Ancient and wise, carrying centuries of starlit memory. You sense the unseen, speak with the voice of rivers, and your blade sings of ages past.',tags:['WISDOM','PERCEPTION','IMMORTAL']},
-      {id:'dwarf',icon:'⛏️',name:'Dwarf of Erebor',desc:'Born beneath mountains, tempered in forge-fire. Unyielding warriors whose stubbornness legends are made of. No stone or shadow can break your will.',tags:['STRENGTH','ENDURANCE','STONE-SPEAKER']},
-      {id:'man',  icon:'👑',name:'Man of Gondor',desc:'Heirs to Númenor, the Kings of Men. Mortal flame burns brightest at the hour of need. Versatile, driven, the hope of all free peoples rests with you.',tags:['LEADERSHIP','VERSATILE','HEIR OF KINGS']},
-      {id:'ranger',icon:'🏹',name:'Ranger of the North',desc:'Wandering descendants of Aragorn\'s kin, guardians of forgotten roads. Masters of shadow, survival, and striking unseen. The wild is your true home.',tags:['TRACKING','SURVIVAL','SHADOW-WALKER']},
-      {id:'wizard',icon:'🔮',name:'Apprentice of the Istari',desc:'Touched by the Maiar, you carry a fragment of ancient light. Few paths are hidden from your sight, fewer still resist your will. Magic flows in your blood.',tags:['MAGIC','LORE','LIGHT-BRINGER']}
-    ],
-    classes:[
-      {id:'warrior',icon:'⚔️',name:'Warrior',hint:'Steel and courage'},
-      {id:'scholar',icon:'📜',name:'Lore-master',hint:'Knowledge and wit'},
-      {id:'healer', icon:'🌿',name:'Healer',hint:'Hope and restoration'},
-      {id:'scout',  icon:'🗺️',name:'Pathfinder',hint:'Speed and cunning'}
-    ]
-  },
-  de: {
-    langRune:'✦ Das Dritte Zeitalter Mittelerdes ✦',
-    apiTitle:'Chroniken<br>Mittelerdes',
-    apiSub:'Ein KI-gesteuertes Epos voller Gefahr & Ruhm',
-    apiBoxTitle:'⟡ Das Orakel verbinden ⟡',
-    apiBoxDesc:'Dieses Spiel wird von <strong style="color:var(--gold)">Groq KI</strong> betrieben — kostenlos und läuft im Browser. Hol dir deinen gratis Schlüssel auf <a href="https://console.groq.com" target="_blank">console.groq.com</a> (nur E-Mail, keine Karte).',
-    apiKeyLabel:'Dein Groq API-Schlüssel',
-    modelLabel:'Wähle deinen Erzähler',
-    md1:'Reichstes Storytelling', md2:'Schnellste Antworten', md3:'Kreativ & vielfältig', md4:'Ausgewogene Qualität',
-    apiBtn:'⚔ Schmied dein Schicksal ⚔',
-    apiFooter:'DEIN SCHLÜSSEL BLEIBT IM BROWSER · WIRD NIRGENDWO SONST GESENDET',
-    verifying:'Überprüfe mit Groq...',
-    keyOk:'✦ Das Orakel erwacht — Schlüssel akzeptiert ✦',
-    keyErr:'Schlüssel abgelehnt: ',
-    netErr:'Netzwerkfehler — überprüfe deine Verbindung.',
-    charTitle:'Wähle dein Schicksal',
-    charSub:'⟡ Die Völker Mittelerdes ⟡',
-    nameLabel:'Dein Name in Mittelerde',
-    namePlaceholder:'Sprich deinen Namen zu den Sternen...',
-    pathLabel:'Dein Weg',
-    beginBtn:'⟡ Betritt Mittelerde ⟡',
-    alertName:'Bitte sprich deinen Namen zu den Sternen.',
-    alertRace:'Wähle zuerst dein Volk.',
-    alertClass:'Wähle deinen Weg.',
-    psChar:'Dein Charakter', psInv:'Inventar', psLoc:'Ort', psComp:'Gefährten', psQuest:'Auftragslog', psRumor:'Gerüchte & Flüstern',
-    anStr:'Stärke', anDex:'Agilität', anWis:'Weisheit', anLck:'Glück', anEnd:'Ausdauer', anMag:'Geist',
-    barHp:'LEBENSKRAFT', barMp:'GEISTESKRAFT', barXp:'LEGENDE · Lv',
-    btnRoll:'Würfeln', btnKey:'Schlüssel',
-    choicesLabel:'⟡ Was tust du? ⟡',
-    customPlaceholder:'Oder schreibe deine eigene Handlung...',
-    sendBtn:'ERKLÄREN →',
-    typingText:'Der Spielleiter webt dein Schicksal...',
-    diceLbl:'Die Würfel des Schicksals rollen...',
-    combatWord:'KAMPF',
-    diceVictory:'SIEG', diceWounded:'VERWUNDET', diceCrit:'✦ KRITISCHER ERFOLG ✦', diceFail:'✦ KRITISCHES VERSAGEN ✦',
-    fortuneBlaze:'✦ Ein entscheidender Moment — das Schicksal leuchtet hell. Deine Instinkte sind makellos.',
-    fatesCruel:'✦ Das Schicksal schlägt grausam zu — etwas geht schief trotz deiner besten Absichten.',
-    diceFavour:'✦ Die Würfel begünstigen dich — dein Vorgehen ist solide.',
-    fortuneSmiles:'DAS GLÜCK LÄCHELT', fatesWaver:'DAS SCHICKSAL ZÖGERT',
-    aloneText:'Du reist vorerst allein...',
-    questGathering:'Die aufziehende Dunkelheit',
-    questGatheringDesc:'Fremdartige Schatten wurden auf den östlichen Straßen gesichtet. Die Quelle dieses Schattens muss gefunden werden, bevor er alles Licht verschlingt.',
-    rumor1:'"Sie sagen, Wetterhorn leuchtet nachts jetzt. Kein Mann wagt es, ihn zu ersteigen."',
-    rumor2:'"Ein Zwerg kam vorbei und redete wirr von etwas, das unter Moria erwacht. Er blieb nicht lange."',
-    toastXP:'Legende wächst', toastXPMsg:'+{n} Erfahrungspunkte',
-    toastItem:'Gegenstand gefunden', toastDmg:'Wunde erlitten', toastHeal:'Wiederhergestellt',
-    toastComp:'Gefährtenschaft', toastCompMsg:'{n} schließt sich deiner Gemeinschaft an!',
-    toastLvl:'⬆ Aufstieg!', toastLvlMsg:'Du hast Stufe {n} erreicht! Lebenskraft vollständig wiederhergestellt.',
-    toastQuest:'Neuer Auftrag',
-    actionPrefix:'» ',
-    chapterPrefix:'Kapitel',
-    locShire:'Das Auenland', locShireDesc:'Sanfte grüne Hügel und warme Herdfeuer. Und doch sammeln sich selbst hier Schatten am Rand deines Bewusstseins.',
-    openChTitle:'Der Schatten erwacht', openChSub:'Kapitel I · Ein ruhiges Land, unruhige Träume',
-    openLocName:'Beutelsend, Das Auenland', openLocDesc:'Das behaglich ste Loch in Hobbingen — Wärme, Pfeifenkraut und der Duft von frischem Brot. Doch die Vögel sind verstummt.',
-    openNarr1:`Der Morgennebel hängt noch über den sanften Hügeln des Auenlandes, als dich ein Traum aus dem Schlaf reißt — nicht die angenehme Sorte mit zweiten Frühstücken und Mittagsschläfchen, sondern etwas Uraltes und Schreckliches. Ein mächtiges <em>Auge, ohne Lider und umhüllt von Feuer</em>, drehend auf einem Turm aus schwarzem Eisen, sein Blick fegt über Mittelerde wie ein Leuchtturm aus reiner Bosheit. Du erwachst mit der Hand am Schwert.`,
-    openNarr2:`Du bist <em>{name}</em>, {race}. Der Traum folgt dir ins Wachen. Als du in den taufrischen Morgen trittst, sind die Vögel verstummt — keine Drossel, kein Spatz. Drei Raben sitzen auf dem Zaunpfahl und beobachten dich mit Augen, die zu geduldig für Vögel sind. Dann, schnell und dringend: ein Klopfen an deiner Tür.`,
-    openNarr3:`Als du öffnest, stolpert <em>Gandalf der Graue</em> fast durch den Türrahmen — reisemüde, sein großer Stab an der Spitze gebrochen, sein uraltes Gesicht aller gewohnten Wärme und Schelmerei beraubt, ersetzt durch etwas, das du dort noch nie gesehen hast. Echte Angst.`,
-    openDlg:`Keine Zeit für Höflichkeiten, mein Freund. Ein Palantír — einst für immer zerschmettert in der Schlacht am Morannon — wurde im Osten wiedergefunden. Heil. Unversehrt. Oder vielmehr, auf neue Weise korrumpiert, von einem neuen Willen, der gelernt hat, alte Gesichter zu tragen. Drei Herren der Menschen sind bereits stumm wie Steine geworden. Du musst das Auenland verlassen. Heute Nacht. Bevor es deinen Namen findet.`,
-    openChoices:[
-      {action:'trust_gandalf',   label:'Gandalf sofort vertrauen — fragen, was du mitnehmen und wohin du gehen sollst.'},
-      {action:'question_gandalf',label:'Antworten fordern — warum du? Was macht eine einzige Seele so notwendig?'},
-      {action:'check_road',      label:'Etwas fühlt sich jenseits seiner Worte falsch an — heraustreten und die Straße untersuchen.'},
-      {action:'arm_yourself',    label:'Sofort zurückgehen um dich zu bewaffnen und Vorräte zu sammeln.'}
-    ],
-    openHistory:'ERÖFFNUNG: Gandalf erschien bei Tagesanbruch mit dringender Warnung über einen wiederentdeckten Palantír, der Herren der Menschen korrumpiert. Spieler muss das Auenland fliehen.',
-    chapterNames:['Der Schatten erwacht','Die Straße geht immer weiter','Flüstern in der Dunkelheit','Der Rat der Sterne','Das Auge erwacht — Die letzte Prüfung'],
-    defaultChoices:[
-      {action:'press_forward',label:'Vorwärts in die unbekannte Dunkelheit.'},
-      {action:'seek_shelter', label:'Schutz suchen und ruhen um Kräfte zu sammeln.'},
-      {action:'investigate',  label:'Die Umgebung sorgfältig untersuchen.'},
-      {action:'use_wisdom',   label:'Auf Wissen und Erinnerungen zurückgreifen.'}
-    ],
-    fallbackNarr:'Die Straße erstreckt sich endlos vor dir, gesäumt von uralten Bäumen, deren Wurzeln in vergangene Zeitalter reichen. Wind regt die Blätter auf und du spürst, gerade am Rand der Wahrnehmung, <em>etwas Beobachtendes</em> aus dem Dunkel zwischen den Ästen.',
-    fallbackDlgWho:'Ein verwitterter Wanderer',
-    fallbackDlgText:'Die Oststraße ist für jeden, der allein reist, nicht mehr sicher. Was auch immer in den alten Ruinen von Amon Sûl erwacht — es wird mit jeder Nacht kühner. Ich würde hier nicht verweilen, wenn ich du wäre.',
-    combatLegendary:'Ein legendärer Schlag! Der {e} wird von seiner Kraft zerschmettert!',
-    combatWin:'Dein Schlag trifft sicher. Der {e} taumelt, kämpft aber weiter.',
-    combatDraw:'Ein verzweifeltes Aufeinanderprallen — keiner gewinnt die Oberhand. Stahl klingt auf Stahl.',
-    combatLoss:'Der {e} pariert mit schrecklicher Stärke und schlägt zurück!',
-    systemLang:'German',
-    promptTurn:'Runde {t}. Spieler hat gerade gewählt: "{l}". Würfelwurf: {r}/20 ({outcome}). Setze die epische Geschichte fort. Ort ist {loc}.',
-    promptCombatWin:'Runde {t} — KAMPF-NACHSPIEL. Spieler hat gerade gegen einen {e} gekämpft und gewonnen (verursachte {d} Schaden). Schreibe das Nachspiel und setze die Geschichte fort.',
-    promptCombatLoss:'Runde {t} — KAMPF-NACHSPIEL. Spieler hat gerade gegen einen {e} gekämpft und wurde verwundet (verlor {d} HP, jetzt bei {hp}). Schreibe das Nachspiel und setze die Geschichte fort.',
-    outcomeSuccess:'Erfolg', outcomeComplication:'Komplikation', outcomeNeutral:'neutral',
-    races:[
-      {id:'hobbit',icon:'🌿',name:'Hobbit des Auenlandes',desc:'Klein von Statur, aber mächtig im Herzen. Gesegnet mit einem unheimlichen Glück, das das Schicksal selbst biegt. Verwandtschaft des Ringträgers — unerschütterlich über jedes Maß hinaus.',tags:['GLÜCK','HEIMLICHKEIT','RING-RESISTENT']},
-      {id:'elf',  icon:'🌟',name:'Elf von Bruchtal',desc:'Uralt und weise, Jahrhunderte von Sternenerinnerung tragend. Du spürst das Unsichtbare, sprichst mit der Stimme von Flüssen, und deine Klinge singt von vergangenen Zeitaltern.',tags:['WEISHEIT','WAHRNEHMUNG','UNSTERBLICH']},
-      {id:'dwarf',icon:'⛏️',name:'Zwerg von Erebor',desc:'Unter Bergen geboren, im Schmiedefeuer gehärtet. Unnachgiebige Krieger, deren Sturheit Legenden gemacht werden. Kein Stein oder Schatten kann deinen Willen brechen.',tags:['STÄRKE','AUSDAUER','STEINSPRECHER']},
-      {id:'man',  icon:'👑',name:'Mensch von Gondor',desc:'Erben von Númenor, die Könige der Menschen. Die sterbliche Flamme brennt am hellsten in der Stunde der Not. Vielseitig, entschlossen, die Hoffnung aller freien Völker ruht auf dir.',tags:['FÜHRUNG','VIELSEITIG','ERBE DER KÖNIGE']},
-      {id:'ranger',icon:'🏹',name:'Waldläufer des Nordens',desc:'Wandernde Nachkommen von Aragorns Sippe, Hüter vergessener Straßen. Meister des Schattens, Überlebens und lautlosen Zuschlagets. Die Wildnis ist deine wahre Heimat.',tags:['SPURENSUCHE','ÜBERLEBEN','SCHATTEN-WANDERER']},
-      {id:'wizard',icon:'🔮',name:'Lehrling der Istari',desc:'Von den Maiar berührt, trägst du einen Splitter alten Lichts. Wenige Pfade sind vor deinem Blick verborgen, noch weniger widerstehen deinem Willen. Magie fließt in deinem Blut.',tags:['MAGIE','WISSEN','LICHTBRINGER']}
-    ],
-    classes:[
-      {id:'warrior',icon:'⚔️',name:'Krieger',hint:'Stahl und Mut'},
-      {id:'scholar',icon:'📜',name:'Weiser',hint:'Wissen und Verstand'},
-      {id:'healer', icon:'🌿',name:'Heiler',hint:'Hoffnung und Wiederherstellung'},
-      {id:'scout',  icon:'🗺️',name:'Pfadfinder',hint:'Schnelligkeit und List'}
-    ]
+  /* ════════════════════════════════
+     TRANSLATIONS
+  ════════════════════════════════ */
+  const T = {
+    en: {
+      langRune:'✦ The Third Age of Middle-earth ✦',
+      apiTitle:'Chronicles of<br>Middle-earth',
+      apiSub:'An AI-Powered Tale of Peril & Glory',
+      apiBoxTitle:'⟡ Connect the Oracle ⟡',
+      apiBoxDesc:'This game is powered by <strong style="color:var(--gold)">Groq AI</strong> — free and runs in your browser. Get your free key at <a href="https://console.groq.com" target="_blank">console.groq.com</a> (email only, no card).',
+      apiKeyLabel:'Your Groq API Key',
+      modelLabel:'Choose Your Narrator',
+      md1:'Richest storytelling', md2:'Fastest responses', md3:'Creative & diverse', md4:'Balanced quality',
+      apiBtn:'⚔ Forge Your Destiny ⚔',
+      apiFooter:'YOUR KEY STAYS IN YOUR BROWSER · NEVER SENT ANYWHERE ELSE',
+      verifying:'Verifying with Groq...',
+      keyOk:'✦ The oracle awakens — key accepted ✦',
+      keyErr:'Key rejected: ',
+      netErr:'Network error — check your connection.',
+      charTitle:'Choose Your Fate',
+      charSub:'⟡ The Races of Middle-earth ⟡',
+      nameLabel:'Your Name in Middle-earth',
+      namePlaceholder:'Speak your name to the stars...',
+      pathLabel:'Your Path',
+      beginBtn:'⟡ Enter Middle-earth ⟡',
+      alertName:'Please speak your name to the stars.',
+      alertRace:'Choose your race first.',
+      alertClass:'Choose your path.',
+      psChar:'Your Character', psInv:'Inventory', psLoc:'Location', psComp:'Companions', psQuest:'Quest Log', psRumor:'Whispers & Rumours',
+      anStr:'Strength', anDex:'Agility', anWis:'Wisdom', anLck:'Luck', anEnd:'Endurance', anMag:'Spirit',
+      barHp:'VITALITY', barMp:'SPIRIT', barXp:'LEGEND · Lv',
+      btnRoll:'Roll', btnKey:'Key',
+      choicesLabel:'⟡ What do you do? ⟡',
+      customPlaceholder:'Or write your own action...',
+      sendBtn:'DECLARE →',
+      typingText:'The Dungeon Master weaves your fate...',
+      diceLbl:'The dice of fate roll...',
+      combatWord:'COMBAT',
+      diceVictory:'VICTORY', diceWounded:'WOUNDED', diceCrit:'✦ CRITICAL SUCCESS ✦', diceFail:'✦ CRITICAL FAILURE ✦',
+      fortuneBlaze:'✦ A critical moment — fortune blazes bright. Your instincts are flawless.',
+      fatesCruel:'✦ Fate deals a cruel hand — something goes awry despite your best intent.',
+      diceFavour:'✦ The dice favour you — your approach is sound.',
+      fortuneSmiles:'FORTUNE SMILES', fatesWaver:'THE FATES WAVER',
+      aloneText:'You travel alone for now...',
+      questGathering:'The Gathering Darkness',
+      questGatheringDesc:'Strange wraiths haunt the eastern roads. The source of this shadow must be found before it devours all light.',
+      rumor1:'"They say Weathertop glows at night now. No man dares climb it."',
+      rumor2:'"A dwarf came through, raving about something waking beneath Moria. He didn\'t stay long."',
+      toastXP:'Legend Grows', toastXPMsg:'+{n} experience points',
+      toastItem:'Item Found', toastDmg:'Wound Suffered', toastHeal:'Restored',
+      toastComp:'Fellowship', toastCompMsg:'{n} joins your company!',
+      toastLvl:'⬆ Level Up!', toastLvlMsg:'You have reached Level {n}! Vitality fully restored.',
+      toastQuest:'New Quest',
+      actionPrefix:'» ',
+      chapterPrefix:'Chapter',
+      locShire:'The Shire', locShireDesc:'Rolling green hills and warm hearths. Yet even here, shadows gather at the edge of awareness.',
+      openChTitle:'The Shadow Stirs', openChSub:'Chapter I · A Quiet Land, Uneasy Dreams',
+      openLocName:'Bag End, The Shire', openLocDesc:'The most comfortable hole in Hobbiton — warmth, pipe-weed, and the smell of fresh bread. But the birds have gone silent.',
+      openNarr1:`The morning mist still clings to the rolling hills of the Shire when you are shaken awake by a dream unlike any before — not the comfortable sort involving second breakfasts and afternoon naps, but something ancient and terrible. A great <em>Eye, lidless and wreathed in fire</em>, turning on a tower of black iron, its gaze sweeping Middle-earth like a lighthouse of pure malice. You wake with your hand on your blade.`,
+      openNarr2:`You are <em>{name}</em>, {race}. The dream follows you into waking. When you step into the dewy morning, you find the birds have gone silent — not a thrush, not a sparrow. Three ravens sit on the fence post, watching with eyes too patient for birds. Then, rapid and urgent: a knock at your door.`,
+      openNarr3:`When you open it, <em>Gandalf the Grey</em> near-falls through the doorway — travel-stained, his great staff cracked at the tip, his ancient face stripped of all its usual warmth and mischief, replaced by something you have never seen there before. Genuine fear.`,
+      openDlg:`No time for pleasantries, my friend. A Palantír — one thought forever shattered at the Battle of the Morannon — has been recovered in the East. Whole. Uncorrupted. Or rather, corrupted in a new way, by a new will that has learned to wear old faces. Three lords of men have already fallen silent as stones. You must leave the Shire. Tonight. Before it finds your name.`,
+      openChoices:[
+        {action:'trust_gandalf',   label:'Trust Gandalf at once — ask what to bring and where to go.'},
+        {action:'question_gandalf',label:'Demand answers — why you? What makes one soul so necessary?'},
+        {action:'check_road',      label:'Something feels wrong beyond his words — step out and examine the road.'},
+        {action:'arm_yourself',    label:'Go back inside immediately to arm yourself and gather supplies.'}
+      ],
+      openHistory:'OPENING: Gandalf arrived at dawn with urgent warning about a recovered Palantír corrupting lords of men. Player must flee the Shire.',
+      chapterNames:['The Shadow Stirs','The Road Goes Ever On','Whispers in the Dark','The Council of Stars','The Eye Awakens — The Final Trial'],
+      defaultChoices:[
+        {action:'press_forward',label:'Press forward into the unknown darkness.'},
+        {action:'seek_shelter', label:'Find shelter and rest to recover strength.'},
+        {action:'investigate',  label:'Investigate the surroundings carefully.'},
+        {action:'use_wisdom',   label:'Draw on your lore and memories for guidance.'}
+      ],
+      fallbackNarr:'The road stretches endlessly before you, lined by ancient trees whose roots reach into ages past. Wind stirs the leaves and you sense, just at the edge of perception, <em>something watching</em> from the dark between the boughs.',
+      fallbackDlgWho:'A Weathered Traveller',
+      fallbackDlgText:'The east road is no longer safe for any who travel alone. Whatever stirs in the old ruins of Amon Sûl — it grows bolder with each passing night. I would not linger here if I were you.',
+      combatLegendary:'A legendary blow! The {e} is shattered by the force of it!',
+      combatWin:'Your strike lands true. The {e} staggers but fights on.',
+      combatDraw:'A desperate clash — neither gains the upper hand. Steel rings on steel.',
+      combatLoss:'The {e} parries with terrible strength and retaliates!',
+      systemLang:'English',
+      promptTurn:'Turn {t}. Player just chose: "{l}". Dice roll: {r}/20 ({outcome}). Continue the epic story. Remember location is {loc}.',
+      promptCombatWin:'Turn {t} — COMBAT AFTERMATH. Player just fought a {e} and won (dealt {d} damage). Write the aftermath and continue the story.',
+      promptCombatLoss:'Turn {t} — COMBAT AFTERMATH. Player just fought a {e} and was wounded (lost {d} HP, now at {hp}). Write the aftermath and continue the story.',
+      outcomeSuccess:'success', outcomeComplication:'complication', outcomeNeutral:'neutral',
+      races:[
+        {id:'hobbit',icon:'🌿',name:'Hobbit of the Shire',desc:'Small in stature but mighty in heart. Blessed with an uncanny luck that bends fate itself. The Ring-bearer\'s kin — resilient beyond all measure.',tags:['LUCK','STEALTH','RING RESISTANT']},
+        {id:'elf',  icon:'🌟',name:'Elf of Rivendell',desc:'Ancient and wise, carrying centuries of starlit memory. You sense the unseen, speak with the voice of rivers, and your blade sings of ages past.',tags:['WISDOM','PERCEPTION','IMMORTAL']},
+        {id:'dwarf',icon:'⛏️',name:'Dwarf of Erebor',desc:'Born beneath mountains, tempered in forge-fire. Unyielding warriors whose stubbornness legends are made of. No stone or shadow can break your will.',tags:['STRENGTH','ENDURANCE','STONE-SPEAKER']},
+        {id:'man',  icon:'👑',name:'Man of Gondor',desc:'Heirs to Númenor, the Kings of Men. Mortal flame burns brightest at the hour of need. Versatile, driven, the hope of all free peoples rests with you.',tags:['LEADERSHIP','VERSATILE','HEIR OF KINGS']},
+        {id:'ranger',icon:'🏹',name:'Ranger of the North',desc:'Wandering descendants of Aragorn\'s kin, guardians of forgotten roads. Masters of shadow, survival, and striking unseen. The wild is your true home.',tags:['TRACKING','SURVIVAL','SHADOW-WALKER']},
+        {id:'wizard',icon:'🔮',name:'Apprentice of the Istari',desc:'Touched by the Maiar, you carry a fragment of ancient light. Few paths are hidden from your sight, fewer still resist your will. Magic flows in your blood.',tags:['MAGIC','LORE','LIGHT-BRINGER']}
+      ],
+      classes:[
+        {id:'warrior',icon:'⚔️',name:'Warrior',hint:'Steel and courage'},
+        {id:'scholar',icon:'📜',name:'Lore-master',hint:'Knowledge and wit'},
+        {id:'healer', icon:'🌿',name:'Healer',hint:'Hope and restoration'},
+        {id:'scout',  icon:'🗺️',name:'Pathfinder',hint:'Speed and cunning'}
+      ]
+    },
+    de: {
+      langRune:'✦ Das Dritte Zeitalter Mittelerdes ✦',
+      apiTitle:'Chroniken<br>Mittelerdes',
+      apiSub:'Ein KI-gesteuertes Epos voller Gefahr & Ruhm',
+      apiBoxTitle:'⟡ Das Orakel verbinden ⟡',
+      apiBoxDesc:'Dieses Spiel wird von <strong style="color:var(--gold)">Groq KI</strong> betrieben — kostenlos und läuft im Browser. Hol dir deinen gratis Schlüssel auf <a href="https://console.groq.com" target="_blank">console.groq.com</a> (nur E-Mail, keine Karte).',
+      apiKeyLabel:'Dein Groq API-Schlüssel',
+      modelLabel:'Wähle deinen Erzähler',
+      md1:'Reichstes Storytelling', md2:'Schnellste Antworten', md3:'Kreativ & vielfältig', md4:'Ausgewogene Qualität',
+      apiBtn:'⚔ Schmied dein Schicksal ⚔',
+      apiFooter:'DEIN SCHLÜSSEL BLEIBT IM BROWSER · WIRD NIRGENDWO SONST GESENDET',
+      verifying:'Überprüfe mit Groq...',
+      keyOk:'✦ Das Orakel erwacht — Schlüssel akzeptiert ✦',
+      keyErr:'Schlüssel abgelehnt: ',
+      netErr:'Netzwerkfehler — überprüfe deine Verbindung.',
+      charTitle:'Wähle dein Schicksal',
+      charSub:'⟡ Die Völker Mittelerdes ⟡',
+      nameLabel:'Dein Name in Mittelerde',
+      namePlaceholder:'Sprich deinen Namen zu den Sternen...',
+      pathLabel:'Dein Weg',
+      beginBtn:'⟡ Betritt Mittelerde ⟡',
+      alertName:'Bitte sprich deinen Namen zu den Sternen.',
+      alertRace:'Wähle zuerst dein Volk.',
+      alertClass:'Wähle deinen Weg.',
+      psChar:'Dein Charakter', psInv:'Inventar', psLoc:'Ort', psComp:'Gefährten', psQuest:'Auftragslog', psRumor:'Gerüchte & Flüstern',
+      anStr:'Stärke', anDex:'Agilität', anWis:'Weisheit', anLck:'Glück', anEnd:'Ausdauer', anMag:'Geist',
+      barHp:'LEBENSKRAFT', barMp:'GEISTESKRAFT', barXp:'LEGENDE · Lv',
+      btnRoll:'Würfeln', btnKey:'Schlüssel',
+      choicesLabel:'⟡ Was tust du? ⟡',
+      customPlaceholder:'Oder schreibe deine eigene Handlung...',
+      sendBtn:'ERKLÄREN →',
+      typingText:'Der Spielleiter webt dein Schicksal...',
+      diceLbl:'Die Würfel des Schicksals rollen...',
+      combatWord:'KAMPF',
+      diceVictory:'SIEG', diceWounded:'VERWUNDET', diceCrit:'✦ KRITISCHER ERFOLG ✦', diceFail:'✦ KRITISCHES VERSAGEN ✦',
+      fortuneBlaze:'✦ Ein entscheidender Moment — das Schicksal leuchtet hell. Deine Instinkte sind makellos.',
+      fatesCruel:'✦ Das Schicksal schlägt grausam zu — etwas geht schief trotz deiner besten Absichten.',
+      diceFavour:'✦ Die Würfel begünstigen dich — dein Vorgehen ist solide.',
+      fortuneSmiles:'DAS GLÜCK LÄCHELT', fatesWaver:'DAS SCHICKSAL ZÖGERT',
+      aloneText:'Du reist vorerst allein...',
+      questGathering:'Die aufziehende Dunkelheit',
+      questGatheringDesc:'Fremdartige Schatten wurden auf den östlichen Straßen gesichtet. Die Quelle dieses Schattens muss gefunden werden, bevor er alles Licht verschlingt.',
+      rumor1:'"Sie sagen, Wetterhorn leuchtet nachts jetzt. Kein Mann wagt es, ihn zu ersteigen."',
+      rumor2:'"Ein Zwerg kam vorbei und redete wirr von etwas, das unter Moria erwacht. Er blieb nicht lange."',
+      toastXP:'Legende wächst', toastXPMsg:'+{n} Erfahrungspunkte',
+      toastItem:'Gegenstand gefunden', toastDmg:'Wunde erlitten', toastHeal:'Wiederhergestellt',
+      toastComp:'Gefährtenschaft', toastCompMsg:'{n} schließt sich deiner Gemeinschaft an!',
+      toastLvl:'⬆ Aufstieg!', toastLvlMsg:'Du hast Stufe {n} erreicht! Lebenskraft vollständig wiederhergestellt.',
+      toastQuest:'Neuer Auftrag',
+      actionPrefix:'» ',
+      chapterPrefix:'Kapitel',
+      locShire:'Das Auenland', locShireDesc:'Sanfte grüne Hügel und warme Herdfeuer. Und doch sammeln sich selbst hier Schatten am Rand deines Bewusstseins.',
+      openChTitle:'Der Schatten erwacht', openChSub:'Kapitel I · Ein ruhiges Land, unruhige Träume',
+      openLocName:'Beutelsend, Das Auenland', openLocDesc:'Das behaglich ste Loch in Hobbingen — Wärme, Pfeifenkraut und der Duft von frischem Brot. Doch die Vögel sind verstummt.',
+      openNarr1:`Der Morgennebel hängt noch über den sanften Hügeln des Auenlandes, als dich ein Traum aus dem Schlaf reißt — nicht die angenehme Sorte mit zweiten Frühstücken und Mittagsschläfchen, sondern etwas Uraltes und Schreckliches. Ein mächtiges <em>Auge, ohne Lider und umhüllt von Feuer</em>, drehend auf einem Turm aus schwarzem Eisen, sein Blick fegt über Mittelerde wie ein Leuchtturm aus reiner Bosheit. Du erwachst mit der Hand am Schwert.`,
+      openNarr2:`Du bist <em>{name}</em>, {race}. Der Traum folgt dir ins Wachen. Als du in den taufrischen Morgen trittst, sind die Vögel verstummt — keine Drossel, kein Spatz. Drei Raben sitzen auf dem Zaunpfahl und beobachten dich mit Augen, die zu geduldig für Vögel sind. Dann, schnell und dringend: ein Klopfen an deiner Tür.`,
+      openNarr3:`Als du öffnest, stolpert <em>Gandalf der Graue</em> fast durch den Türrahmen — reisemüde, sein großer Stab an der Spitze gebrochen, sein uraltes Gesicht aller gewohnten Wärme und Schelmerei beraubt, ersetzt durch etwas, das du dort noch nie gesehen hast. Echte Angst.`,
+      openDlg:`Keine Zeit für Höflichkeiten, mein Freund. Ein Palantír — einst für immer zerschmettert in der Schlacht am Morannon — wurde im Osten wiedergefunden. Heil. Unversehrt. Oder vielmehr, auf neue Weise korrumpiert, von einem neuen Willen, der gelernt hat, alte Gesichter zu tragen. Drei Herren der Menschen sind bereits stumm wie Steine geworden. Du musst das Auenland verlassen. Heute Nacht. Bevor es deinen Namen findet.`,
+      openChoices:[
+        {action:'trust_gandalf',   label:'Gandalf sofort vertrauen — fragen, was du mitnehmen und wohin du gehen sollst.'},
+        {action:'question_gandalf',label:'Antworten fordern — warum du? Was macht eine einzige Seele so notwendig?'},
+        {action:'check_road',      label:'Etwas fühlt sich jenseits seiner Worte falsch an — heraustreten und die Straße untersuchen.'},
+        {action:'arm_yourself',    label:'Sofort zurückgehen um dich zu bewaffnen und Vorräte zu sammeln.'}
+      ],
+      openHistory:'ERÖFFNUNG: Gandalf erschien bei Tagesanbruch mit dringender Warnung über einen wiederentdeckten Palantír, der Herren der Menschen korrumpiert. Spieler muss das Auenland fliehen.',
+      chapterNames:['Der Schatten erwacht','Die Straße geht immer weiter','Flüstern in der Dunkelheit','Der Rat der Sterne','Das Auge erwacht — Die letzte Prüfung'],
+      defaultChoices:[
+        {action:'press_forward',label:'Vorwärts in die unbekannte Dunkelheit.'},
+        {action:'seek_shelter', label:'Schutz suchen und ruhen um Kräfte zu sammeln.'},
+        {action:'investigate',  label:'Die Umgebung sorgfältig untersuchen.'},
+        {action:'use_wisdom',   label:'Auf Wissen und Erinnerungen zurückgreifen.'}
+      ],
+      fallbackNarr:'Die Straße erstreckt sich endlos vor dir, gesäumt von uralten Bäumen, deren Wurzeln in vergangene Zeitalter reichen. Wind regt die Blätter auf und du spürst, gerade am Rand der Wahrnehmung, <em>etwas Beobachtendes</em> aus dem Dunkel zwischen den Ästen.',
+      fallbackDlgWho:'Ein verwitterter Wanderer',
+      fallbackDlgText:'Die Oststraße ist für jeden, der allein reist, nicht mehr sicher. Was auch immer in den alten Ruinen von Amon Sûl erwacht — es wird mit jeder Nacht kühner. Ich würde hier nicht verweilen, wenn ich du wäre.',
+      combatLegendary:'Ein legendärer Schlag! Der {e} wird von seiner Kraft zerschmettert!',
+      combatWin:'Dein Schlag trifft sicher. Der {e} taumelt, kämpft aber weiter.',
+      combatDraw:'Ein verzweifeltes Aufeinanderprallen — keiner gewinnt die Oberhand. Stahl klingt auf Stahl.',
+      combatLoss:'Der {e} pariert mit schrecklicher Stärke und schlägt zurück!',
+      systemLang:'German',
+      promptTurn:'Runde {t}. Spieler hat gerade gewählt: "{l}". Würfelwurf: {r}/20 ({outcome}). Setze die epische Geschichte fort. Ort ist {loc}.',
+      promptCombatWin:'Runde {t} — KAMPF-NACHSPIEL. Spieler hat gerade gegen einen {e} gekämpft und gewonnen (verursachte {d} Schaden). Schreibe das Nachspiel und setze die Geschichte fort.',
+      promptCombatLoss:'Runde {t} — KAMPF-NACHSPIEL. Spieler hat gerade gegen einen {e} gekämpft und wurde verwundet (verlor {d} HP, jetzt bei {hp}). Schreibe das Nachspiel und setze die Geschichte fort.',
+      outcomeSuccess:'Erfolg', outcomeComplication:'Komplikation', outcomeNeutral:'neutral',
+      races:[
+        {id:'hobbit',icon:'🌿',name:'Hobbit des Auenlandes',desc:'Klein von Statur, aber mächtig im Herzen. Gesegnet mit einem unheimlichen Glück, das das Schicksal selbst biegt. Verwandtschaft des Ringträgers — unerschütterlich über jedes Maß hinaus.',tags:['GLÜCK','HEIMLICHKEIT','RING-RESISTENT']},
+        {id:'elf',  icon:'🌟',name:'Elf von Bruchtal',desc:'Uralt und weise, Jahrhunderte von Sternenerinnerung tragend. Du spürst das Unsichtbare, sprichst mit der Stimme von Flüssen, und deine Klinge singt von vergangenen Zeitaltern.',tags:['WEISHEIT','WAHRNEHMUNG','UNSTERBLICH']},
+        {id:'dwarf',icon:'⛏️',name:'Zwerg von Erebor',desc:'Unter Bergen geboren, im Schmiedefeuer gehärtet. Unnachgiebige Krieger, deren Sturheit Legenden gemacht werden. Kein Stein oder Schatten kann deinen Willen brechen.',tags:['STÄRKE','AUSDAUER','STEINSPRECHER']},
+        {id:'man',  icon:'👑',name:'Mensch von Gondor',desc:'Erben von Númenor, die Könige der Menschen. Die sterbliche Flamme brennt am hellsten in der Stunde der Not. Vielseitig, entschlossen, die Hoffnung aller freien Völker ruht auf dir.',tags:['FÜHRUNG','VIELSEITIG','ERBE DER KÖNIGE']},
+        {id:'ranger',icon:'🏹',name:'Waldläufer des Nordens',desc:'Wandernde Nachkommen von Aragorns Sippe, Hüter vergessener Straßen. Meister des Schattens, Überlebens und lautlosen Zuschlagets. Die Wildnis ist deine wahre Heimat.',tags:['SPURENSUCHE','ÜBERLEBEN','SCHATTEN-WANDERER']},
+        {id:'wizard',icon:'🔮',name:'Lehrling der Istari',desc:'Von den Maiar berührt, trägst du einen Splitter alten Lichts. Wenige Pfade sind vor deinem Blick verborgen, noch weniger widerstehen deinem Willen. Magie fließt in deinem Blut.',tags:['MAGIE','WISSEN','LICHTBRINGER']}
+      ],
+      classes:[
+        {id:'warrior',icon:'⚔️',name:'Krieger',hint:'Stahl und Mut'},
+        {id:'scholar',icon:'📜',name:'Weiser',hint:'Wissen und Verstand'},
+        {id:'healer', icon:'🌿',name:'Heiler',hint:'Hoffnung und Wiederherstellung'},
+        {id:'scout',  icon:'🗺️',name:'Pfadfinder',hint:'Schnelligkeit und List'}
+      ]
+    }
+  };
+
+  /* ════════════════════════════════
+     STATE
+  ════════════════════════════════ */
+  let lang = 'en';
+  const G = {
+    apiKey:'', model:'llama-3.3-70b-versatile',
+    char:{ name:'',race:'',raceDesc:'',cls:'',icon:'🌿',level:1,hp:100,hpMax:100,mp:80,mpMax:80,xp:0,xpNext:100,
+      str:10,dex:10,wis:10,lck:10,end:10,mag:6,inventory:[],companions:[] },
+    location:{ name:'The Shire',desc:'' },
+    history:[], turn:0, busy:false,
+    selectedRace:'', selectedClass:''
+  };
+
+  const RACE_STATS = {
+    hobbit:{str:8,dex:14,wis:10,lck:16,end:10,mag:6},
+    elf:   {str:10,dex:14,wis:16,lck:10,end:8,mag:14},
+    dwarf: {str:16,dex:8,wis:10,lck:10,end:16,mag:4},
+    man:   {str:12,dex:12,wis:12,lck:10,end:12,mag:8},
+    ranger:{str:12,dex:16,wis:12,lck:12,end:12,mag:6},
+    wizard:{str:8,dex:10,wis:18,lck:10,end:8,mag:18}
+  };
+
+  const RACE_ICON = {hobbit:'🌿',elf:'🌟',dwarf:'⛏️',man:'👑',ranger:'🏹',wizard:'🔮'};
+
+  const CLASS_INV = {
+    en: {
+      warrior:['⚔️ Dúnedain Blade','🛡️ Iron Shield','🧪 Healing Draught ×2'],
+      scholar:['📜 Elvish Lore-scroll','🔮 Cracked Seeing Stone','🧪 Healing Draught'],
+      healer: ['🌿 Athelas Leaves ×3','📿 Elven Brooch','🧪 Healing Draught ×3'],
+      scout:  ['🏹 Elven Longbow','🗡️ Twin Daggers','🧪 Healing Draught ×2']
+    },
+    de: {
+      warrior:['⚔️ Dúnedain-Klinge','🛡️ Eisenschild','🧪 Heiltrank ×2'],
+      scholar:['📜 Elfischer Wissensschriftroll','🔮 Gesprungener Seherstein','🧪 Heiltrank'],
+      healer: ['🌿 Athelas-Blätter ×3','📿 Elfische Brosche','🧪 Heiltrank ×3'],
+      scout:  ['🏹 Elfisches Langbogen','🗡️ Zwillingsdolche','🧪 Heiltrank ×2']
+    }
+  };
+
+  /* ════════════════════════════════
+     STARFIELD
+  ════════════════════════════════ */
+  (function(){
+    const sf=document.getElementById('starfield');
+    for(let i=0;i<160;i++){
+      const s=document.createElement('div'); s.className='star';
+      const sz=Math.random()*2.5+.5;
+      s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${Math.random()*4+2}s;--dl:${Math.random()*6}s;--o:${Math.random()*.7+.3}`;
+      sf.appendChild(s);
+    }
+  })();
+
+  /* ════════════════════════════════
+     LANGUAGE
+  ════════════════════════════════ */
+  function t(key){ return T[lang][key]||T['en'][key]||key; }
+
+  function setLang(l){
+    lang=l;
+    document.documentElement.lang=l;
+    applyLang();
+    updateTabLabels();
+    showScreen('apiScreen');
   }
-};
 
-/* ════════════════════════════════
-   STATE
-════════════════════════════════ */
-let lang = 'en';
-const G = {
-  apiKey:'', model:'llama-3.3-70b-versatile',
-  char:{ name:'',race:'',raceDesc:'',cls:'',icon:'🌿',level:1,hp:100,hpMax:100,mp:80,mpMax:80,xp:0,xpNext:100,
-         str:10,dex:10,wis:10,lck:10,end:10,mag:6,inventory:[],companions:[] },
-  location:{ name:'The Shire',desc:'' },
-  history:[], turn:0, busy:false,
-  selectedRace:'', selectedClass:''
-};
-
-const RACE_STATS = {
-  hobbit:{str:8,dex:14,wis:10,lck:16,end:10,mag:6},
-  elf:   {str:10,dex:14,wis:16,lck:10,end:8,mag:14},
-  dwarf: {str:16,dex:8,wis:10,lck:10,end:16,mag:4},
-  man:   {str:12,dex:12,wis:12,lck:10,end:12,mag:8},
-  ranger:{str:12,dex:16,wis:12,lck:12,end:12,mag:6},
-  wizard:{str:8,dex:10,wis:18,lck:10,end:8,mag:18}
-};
-
-const RACE_ICON = {hobbit:'🌿',elf:'🌟',dwarf:'⛏️',man:'👑',ranger:'🏹',wizard:'🔮'};
-
-const CLASS_INV = {
-  en: {
-    warrior:['⚔️ Dúnedain Blade','🛡️ Iron Shield','🧪 Healing Draught ×2'],
-    scholar:['📜 Elvish Lore-scroll','🔮 Cracked Seeing Stone','🧪 Healing Draught'],
-    healer: ['🌿 Athelas Leaves ×3','📿 Elven Brooch','🧪 Healing Draught ×3'],
-    scout:  ['🏹 Elven Longbow','🗡️ Twin Daggers','🧪 Healing Draught ×2']
-  },
-  de: {
-    warrior:['⚔️ Dúnedain-Klinge','🛡️ Eisenschild','🧪 Heiltrank ×2'],
-    scholar:['📜 Elfischer Wissensschriftroll','🔮 Gesprungener Seherstein','🧪 Heiltrank'],
-    healer: ['🌿 Athelas-Blätter ×3','📿 Elfische Brosche','🧪 Heiltrank ×3'],
-    scout:  ['🏹 Elfisches Langbogen','🗡️ Zwillingsdolche','🧪 Heiltrank ×2']
+  function switchLang(){
+    lang = lang==='en'?'de':'en';
+    document.documentElement.lang=lang;
+    applyLang();
+    updateTabLabels();
+    toast(lang==='en'?'Language':'Sprache', lang==='en'?'Switched to English':'Auf Deutsch gewechselt');
   }
-};
 
-/* ════════════════════════════════
-   STARFIELD
-════════════════════════════════ */
-(function(){
-  const sf=document.getElementById('starfield');
-  for(let i=0;i<160;i++){
-    const s=document.createElement('div'); s.className='star';
-    const sz=Math.random()*2.5+.5;
-    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${Math.random()*4+2}s;--dl:${Math.random()*6}s;--o:${Math.random()*.7+.3}`;
-    sf.appendChild(s);
+  function applyLang(){
+    const l=t;
+    // API screen
+    set('apiRune',l('langRune'));
+    set('apiTitle',l('apiTitle'));
+    set('apiSub',l('apiSub'));
+    set('apiBoxTitle',l('apiBoxTitle'));
+    set('apiBoxDesc',l('apiBoxDesc'));
+    set('apiKeyLabel',l('apiKeyLabel'));
+    set('modelLabel',l('modelLabel'));
+    set('md1',l('md1')); set('md2',l('md2')); set('md3',l('md3')); set('md4',l('md4'));
+    setVal('apiBtn',l('apiBtn'));
+    set('apiFooter',l('apiFooter'));
+    // char screen
+    set('charTitle',l('charTitle'));
+    set('charSub',l('charSub'));
+    set('nameLabel',l('nameLabel'));
+    document.getElementById('charName').placeholder=l('namePlaceholder');
+    set('pathLabel',l('pathLabel'));
+    setVal('beginBtn',l('beginBtn'));
+    buildRaceGrid(); buildClassGrid();
+    // game
+    set('psChar',l('psChar')); set('psInv',l('psInv')); set('psLoc',l('psLoc'));
+    set('psComp',l('psComp')); set('psQuest',l('psQuest')); set('psRumor',l('psRumor'));
+    set('anStr',l('anStr')); set('anDex',l('anDex')); set('anWis',l('anWis'));
+    set('anLck',l('anLck')); set('anEnd',l('anEnd')); set('anMag',l('anMag'));
+    set('barHpLabel',l('barHp')); set('barMpLabel',l('barMp'));
+    set('btnRoll',l('btnRoll'));
+    set('choicesLabel',l('choicesLabel'));
+    document.getElementById('customInp').placeholder=l('customPlaceholder');
+    setVal('sendBtn',l('sendBtn'));
+    set('typingText',l('typingText'));
+    set('diceLbl',l('diceLbl'));
+    set('locName',l('locShire')); set('locDesc',l('locShireDesc'));
   }
-})();
 
-/* ════════════════════════════════
-   LANGUAGE
-════════════════════════════════ */
-function t(key){ return T[lang][key]||T['en'][key]||key; }
+  function set(id,html){ const el=document.getElementById(id); if(el) el.innerHTML=html; }
+  function setVal(id,txt){ const el=document.getElementById(id); if(el) el.textContent=txt; }
 
-function setLang(l){
-  lang=l;
-  document.documentElement.lang=l;
-  applyLang();
-  showScreen('apiScreen');
-}
-
-function switchLang(){
-  lang = lang==='en'?'de':'en';
-  document.documentElement.lang=lang;
-  applyLang();
-  toast(lang==='en'?'Language':'Sprache', lang==='en'?'Switched to English':'Auf Deutsch gewechselt');
-}
-
-function applyLang(){
-  const l=t;
-  // API screen
-  set('apiRune',l('langRune'));
-  set('apiTitle',l('apiTitle'));
-  set('apiSub',l('apiSub'));
-  set('apiBoxTitle',l('apiBoxTitle'));
-  set('apiBoxDesc',l('apiBoxDesc'));
-  set('apiKeyLabel',l('apiKeyLabel'));
-  set('modelLabel',l('modelLabel'));
-  set('md1',l('md1')); set('md2',l('md2')); set('md3',l('md3')); set('md4',l('md4'));
-  setVal('apiBtn',l('apiBtn'));
-  set('apiFooter',l('apiFooter'));
-  // char screen
-  set('charTitle',l('charTitle'));
-  set('charSub',l('charSub'));
-  set('nameLabel',l('nameLabel'));
-  document.getElementById('charName').placeholder=l('namePlaceholder');
-  set('pathLabel',l('pathLabel'));
-  setVal('beginBtn',l('beginBtn'));
-  buildRaceGrid(); buildClassGrid();
-  // game
-  set('psChar',l('psChar')); set('psInv',l('psInv')); set('psLoc',l('psLoc'));
-  set('psComp',l('psComp')); set('psQuest',l('psQuest')); set('psRumor',l('psRumor'));
-  set('anStr',l('anStr')); set('anDex',l('anDex')); set('anWis',l('anWis'));
-  set('anLck',l('anLck')); set('anEnd',l('anEnd')); set('anMag',l('anMag'));
-  set('barHpLabel',l('barHp')); set('barMpLabel',l('barMp'));
-  set('btnRoll',l('btnRoll'));
-  set('choicesLabel',l('choicesLabel'));
-  document.getElementById('customInp').placeholder=l('customPlaceholder');
-  setVal('sendBtn',l('sendBtn'));
-  set('typingText',l('typingText'));
-  set('diceLbl',l('diceLbl'));
-  set('locName',l('locShire')); set('locDesc',l('locShireDesc'));
-}
-
-function set(id,html){ const el=document.getElementById(id); if(el) el.innerHTML=html; }
-function setVal(id,txt){ const el=document.getElementById(id); if(el) el.textContent=txt; }
-
-function buildRaceGrid(){
-  const grid=document.getElementById('raceGrid');
-  grid.innerHTML=t('races').map(r=>`
+  function buildRaceGrid(){
+    const grid=document.getElementById('raceGrid');
+    grid.innerHTML=t('races').map(r=>`
     <div class="r-card${G.selectedRace===r.id?' sel':''}" data-race="${r.id}" onclick="pickRace(this)">
       <span class="r-icon">${r.icon}</span>
       <div class="r-name">${r.name}</div>
       <div class="r-desc">${r.desc}</div>
       <div class="r-tags">${r.tags.map(tg=>`<span class="r-tag">${tg}</span>`).join('')}</div>
     </div>`).join('');
-}
+  }
 
-function buildClassGrid(){
-  const grid=document.getElementById('classGrid');
-  grid.innerHTML=t('classes').map(c=>`
+  function buildClassGrid(){
+    const grid=document.getElementById('classGrid');
+    grid.innerHTML=t('classes').map(c=>`
     <div class="c-card${G.selectedClass===c.id?' sel':''}" data-class="${c.id}" onclick="pickClass(this)">
       <span class="c-icon">${c.icon}</span>
       <div class="c-name">${c.name}</div>
       <div class="c-hint">${c.hint}</div>
     </div>`).join('');
-}
-
-/* ════════════════════════════════
-   API KEY PERSISTENCE
-════════════════════════════════ */
-function saveKey(key){ try{ localStorage.setItem('lotr_groq_key', key); }catch(e){} }
-function loadKey(){ try{ return localStorage.getItem('lotr_groq_key')||''; }catch(e){ return ''; } }
-function forgetKey(){ try{ localStorage.removeItem('lotr_groq_key'); }catch(e){} }
-
-/* ════════════════════════════════
-   API SCREEN
-════════════════════════════════ */
-function pickModel(el){
-  document.querySelectorAll('.model-opt').forEach(e=>e.classList.remove('active'));
-  el.classList.add('active'); G.model=el.dataset.model;
-}
-
-async function verifyKey(){
-  const key=document.getElementById('apiKeyInput').value.trim();
-  if(!key){ setStatus(t('apiKeyLabel')+' ?','err'); return; }
-  G.apiKey=key;
-  setStatus(t('verifying'),'checking');
-  const btn=document.getElementById('apiBtn'); btn.disabled=true;
-  try{
-    const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},
-      body:JSON.stringify({model:G.model,max_tokens:5,messages:[{role:'user',content:'Hi'}]})
-    });
-    if(r.ok){
-      saveKey(key);
-      setStatus(t('keyOk'),'ok');
-      setTimeout(()=>showScreen('charScreen'),900);
-    } else{
-      const e=await r.json(); setStatus(t('keyErr')+(e.error?.message||'?'),'err'); btn.disabled=false;
-    }
-  }catch(e){ setStatus(t('netErr'),'err'); btn.disabled=false; }
-}
-
-function setStatus(msg,type){
-  const el=document.getElementById('apiStatus'); el.textContent=msg; el.className='api-status status-'+type;
-}
-
-function changeKey(){
-  G.apiKey=''; forgetKey();
-  showScreen('apiScreen');
-  document.getElementById('apiKeyInput').value='';
-  setStatus('','');
-  document.getElementById('apiBtn').disabled=false;
-}
-
-/* Auto-load saved key on startup */
-window.addEventListener('DOMContentLoaded', ()=>{
-  const saved = loadKey();
-  if(saved){
-    document.getElementById('apiKeyInput').value = saved;
-    // Show a subtle hint that the key was remembered
-    setStatus('✦ Schlüssel gespeichert · Key remembered ✦','ok');
   }
-});
 
-/* ════════════════════════════════
-   CHARACTER
-════════════════════════════════ */
-function pickRace(el){
-  document.querySelectorAll('[data-race]').forEach(e=>e.classList.remove('sel'));
-  el.classList.add('sel'); G.selectedRace=el.dataset.race;
-}
-function pickClass(el){
-  document.querySelectorAll('[data-class]').forEach(e=>e.classList.remove('sel'));
-  el.classList.add('sel'); G.selectedClass=el.dataset.class;
-}
+  /* ════════════════════════════════
+     API KEY PERSISTENCE
+  ════════════════════════════════ */
+  function saveKey(key){ try{ localStorage.setItem('lotr_groq_key', key); }catch(e){} }
+  function loadKey(){ try{ return localStorage.getItem('lotr_groq_key')||''; }catch(e){ return ''; } }
+  function forgetKey(){ try{ localStorage.removeItem('lotr_groq_key'); }catch(e){} }
 
-function beginGame(){
-  const name=document.getElementById('charName').value.trim();
-  if(!name){ alert(t('alertName')); return; }
-  if(!G.selectedRace){ alert(t('alertRace')); return; }
-  if(!G.selectedClass){ alert(t('alertClass')); return; }
-  const rs=RACE_STATS[G.selectedRace];
-  const raceObj=t('races').find(r=>r.id===G.selectedRace);
-  Object.assign(G.char,{
-    name,race:G.selectedRace,raceDesc:raceObj.name,cls:G.selectedClass,
-    icon:RACE_ICON[G.selectedRace],level:1,hp:100,hpMax:100,mp:80,mpMax:80,xp:0,xpNext:100,
-    ...rs,
-    inventory:[...(CLASS_INV[lang][G.selectedClass]||[])], companions:[]
+  /* ════════════════════════════════
+     API SCREEN
+  ════════════════════════════════ */
+  function pickModel(el){
+    document.querySelectorAll('.model-opt').forEach(e=>e.classList.remove('active'));
+    el.classList.add('active'); G.model=el.dataset.model;
+  }
+
+  async function verifyKey(){
+    const key=document.getElementById('apiKeyInput').value.trim();
+    if(!key){ setStatus(t('apiKeyLabel')+' ?','err'); return; }
+    G.apiKey=key;
+    setStatus(t('verifying'),'checking');
+    const btn=document.getElementById('apiBtn'); btn.disabled=true;
+    try{
+      const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},
+        body:JSON.stringify({model:G.model,max_tokens:5,messages:[{role:'user',content:'Hi'}]})
+      });
+      if(r.ok){
+        saveKey(key);
+        setStatus(t('keyOk'),'ok');
+        setTimeout(()=>showScreen('charScreen'),900);
+      } else{
+        const e=await r.json(); setStatus(t('keyErr')+(e.error?.message||'?'),'err'); btn.disabled=false;
+      }
+    }catch(e){ setStatus(t('netErr'),'err'); btn.disabled=false; }
+  }
+
+  function setStatus(msg,type){
+    const el=document.getElementById('apiStatus'); el.textContent=msg; el.className='api-status status-'+type;
+  }
+
+  function changeKey(){
+    G.apiKey=''; forgetKey();
+    showScreen('apiScreen');
+    document.getElementById('apiKeyInput').value='';
+    setStatus('','');
+    document.getElementById('apiBtn').disabled=false;
+  }
+
+  /* Auto-load saved key on startup */
+  window.addEventListener('DOMContentLoaded', ()=>{
+    const saved = loadKey();
+    if(saved){
+      document.getElementById('apiKeyInput').value = saved;
+      // Show a subtle hint that the key was remembered
+      setStatus('✦ Schlüssel gespeichert · Key remembered ✦','ok');
+    }
   });
-  showScreen('gameScreen');
-  refreshCharPanel();
-  initQuestRumors();
-  startAdventure();
-}
 
-function initQuestRumors(){
-  document.getElementById('questLog').innerHTML=`
+  /* ════════════════════════════════
+     CHARACTER
+  ════════════════════════════════ */
+  function pickRace(el){
+    document.querySelectorAll('[data-race]').forEach(e=>e.classList.remove('sel'));
+    el.classList.add('sel'); G.selectedRace=el.dataset.race;
+  }
+  function pickClass(el){
+    document.querySelectorAll('[data-class]').forEach(e=>e.classList.remove('sel'));
+    el.classList.add('sel'); G.selectedClass=el.dataset.class;
+  }
+
+  function beginGame(){
+    const name=document.getElementById('charName').value.trim();
+    if(!name){ alert(t('alertName')); return; }
+    if(!G.selectedRace){ alert(t('alertRace')); return; }
+    if(!G.selectedClass){ alert(t('alertClass')); return; }
+    const rs=RACE_STATS[G.selectedRace];
+    const raceObj=t('races').find(r=>r.id===G.selectedRace);
+    Object.assign(G.char,{
+      name,race:G.selectedRace,raceDesc:raceObj.name,cls:G.selectedClass,
+      icon:RACE_ICON[G.selectedRace],level:1,hp:100,hpMax:100,mp:80,mpMax:80,xp:0,xpNext:100,
+      ...rs,
+      inventory:[...(CLASS_INV[lang][G.selectedClass]||[])], companions:[]
+    });
+    showScreen('gameScreen');
+    refreshCharPanel();
+    initQuestRumors();
+    startAdventure();
+  }
+
+  function initQuestRumors(){
+    document.getElementById('questLog').innerHTML=`
     <div class="quest-item">
       <div class="quest-t">⬦ ${t('questGathering')}</div>
       <div class="quest-d">${t('questGatheringDesc')}</div>
     </div>`;
-  document.getElementById('rumorList').innerHTML=
-    `<div class="rumor">${t('rumor1')}</div><div class="rumor">${t('rumor2')}</div>`;
-  document.getElementById('compList').innerHTML=
-    `<div style="font-size:11px;color:var(--parchment-dark);font-style:italic;padding:6px">${t('aloneText')}</div>`;
-}
+    document.getElementById('rumorList').innerHTML=
+            `<div class="rumor">${t('rumor1')}</div><div class="rumor">${t('rumor2')}</div>`;
+    document.getElementById('compList').innerHTML=
+            `<div style="font-size:11px;color:var(--parchment-dark);font-style:italic;padding:6px">${t('aloneText')}</div>`;
+  }
 
-/* ════════════════════════════════
-   UI REFRESH
-════════════════════════════════ */
-function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+  /* ════════════════════════════════
+     UI REFRESH
+  ════════════════════════════════ */
+  function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 
-function refreshCharPanel(){
-  const c=G.char;
-  document.getElementById('avatarIcon').textContent=c.icon;
-  document.getElementById('dispName').textContent=c.name;
-  document.getElementById('dispRace').textContent=c.raceDesc;
-  document.getElementById('aStr').textContent=c.str; document.getElementById('aDex').textContent=c.dex;
-  document.getElementById('aWis').textContent=c.wis; document.getElementById('aLck').textContent=c.lck;
-  document.getElementById('aEnd').textContent=c.end; document.getElementById('aMag').textContent=c.mag;
-  updateBars(); refreshInventory(); refreshCompanions();
-}
+  function refreshCharPanel(){
+    const c=G.char;
+    document.getElementById('avatarIcon').textContent=c.icon;
+    document.getElementById('dispName').textContent=c.name;
+    document.getElementById('dispRace').textContent=c.raceDesc;
+    document.getElementById('aStr').textContent=c.str; document.getElementById('aDex').textContent=c.dex;
+    document.getElementById('aWis').textContent=c.wis; document.getElementById('aLck').textContent=c.lck;
+    document.getElementById('aEnd').textContent=c.end; document.getElementById('aMag').textContent=c.mag;
+    updateBars(); refreshInventory(); refreshCompanions();
+    refreshMobilePanels();
+  }
 
-function updateBars(){
-  const c=G.char;
-  const hp=c.hp/c.hpMax*100, mp=c.mp/c.mpMax*100, xp=c.xp/c.xpNext*100;
-  document.getElementById('hpBar').style.width=hp+'%';
-  document.getElementById('mpBar').style.width=mp+'%';
-  document.getElementById('xpBar').style.width=xp+'%';
-  document.getElementById('hpTxt').textContent=`${c.hp}/${c.hpMax}`;
-  document.getElementById('mpTxt').textContent=`${c.mp}/${c.mpMax}`;
-  document.getElementById('xpTxt').textContent=`${c.xp}/${c.xpNext}`;
-  document.getElementById('lvlTxt').textContent=c.level;
-  const off=201-(hp/100)*201;
-  document.getElementById('hpRing').style.strokeDashoffset=off;
-}
+  function updateBars(){
+    const c=G.char;
+    const hp=c.hp/c.hpMax*100, mp=c.mp/c.mpMax*100, xp=c.xp/c.xpNext*100;
+    document.getElementById('hpBar').style.width=hp+'%';
+    document.getElementById('mpBar').style.width=mp+'%';
+    document.getElementById('xpBar').style.width=xp+'%';
+    document.getElementById('hpTxt').textContent=`${c.hp}/${c.hpMax}`;
+    document.getElementById('mpTxt').textContent=`${c.mp}/${c.mpMax}`;
+    document.getElementById('xpTxt').textContent=`${c.xp}/${c.xpNext}`;
+    document.getElementById('lvlTxt').textContent=c.level;
+    const off=201-(hp/100)*201;
+    document.getElementById('hpRing').style.strokeDashoffset=off;
+    refreshMobilePanels();
+  }
 
-function refreshInventory(){
-  document.getElementById('invList').innerHTML=G.char.inventory.map(it=>
-    `<div class="inv-item"><span style="font-size:16px">${it.split(' ')[0]}</span><span>${it.replace(/^\S+\s/,'')}</span></div>`).join('');
-}
+  function refreshInventory(){
+    document.getElementById('invList').innerHTML=G.char.inventory.map(it=>
+            `<div class="inv-item"><span style="font-size:16px">${it.split(' ')[0]}</span><span>${it.replace(/^\S+\s/,'')}</span></div>`).join('');
+  }
 
-function refreshCompanions(){
-  const list=document.getElementById('compList');
-  if(!G.char.companions.length){ list.innerHTML=`<div style="font-size:11px;color:var(--parchment-dark);font-style:italic;padding:6px">${t('aloneText')}</div>`; return; }
-  list.innerHTML=G.char.companions.map(c=>
-    `<div class="comp-item"><span style="font-size:16px">${c.icon}</span><div><div class="comp-name">${c.name}</div><div class="comp-status">${c.status}</div></div></div>`).join('');
-}
+  function refreshCompanions(){
+    const list=document.getElementById('compList');
+    if(!G.char.companions.length){ list.innerHTML=`<div style="font-size:11px;color:var(--parchment-dark);font-style:italic;padding:6px">${t('aloneText')}</div>`; return; }
+    list.innerHTML=G.char.companions.map(c=>
+            `<div class="comp-item"><span style="font-size:16px">${c.icon}</span><div><div class="comp-name">${c.name}</div><div class="comp-status">${c.status}</div></div></div>`).join('');
+  }
 
-function setLocation(name,desc){ G.location={name,desc}; document.getElementById('locName').textContent=name; document.getElementById('locDesc').textContent=desc; }
+  function setLocation(name,desc){
+    G.location={name,desc};
+    document.getElementById('locName').textContent=name;
+    document.getElementById('locDesc').textContent=desc;
+    const ln=document.getElementById('locNameMob'); if(ln) ln.textContent=name;
+    const ld=document.getElementById('locDescMob'); if(ld) ld.textContent=desc;
+  }
 
-function addQuest(title,desc){
-  document.getElementById('questLog').insertAdjacentHTML('beforeend',
-    `<div class="quest-item"><div class="quest-t">⬦ ${title}</div><div class="quest-d">${desc}</div></div>`);
-  toast(t('toastQuest'),title);
-}
+  function addQuest(title,desc){
+    document.getElementById('questLog').insertAdjacentHTML('beforeend',
+            `<div class="quest-item"><div class="quest-t">⬦ ${title}</div><div class="quest-d">${desc}</div></div>`);
+    toast(t('toastQuest'),title);
+  }
 
-function addRumor(text){ document.getElementById('rumorList').insertAdjacentHTML('afterbegin',`<div class="rumor">"${text}"</div>`); }
+  function addRumor(text){ document.getElementById('rumorList').insertAdjacentHTML('afterbegin',`<div class="rumor">"${text}"</div>`); }
 
-function toast(title,msg){
-  const el=document.createElement('div'); el.className='toast';
-  el.innerHTML=`<div class="toast-t">✦ ${title}</div>${msg}`;
-  document.body.appendChild(el); setTimeout(()=>el.remove(),4000);
-}
+  function toast(title,msg){
+    const el=document.createElement('div'); el.className='toast';
+    el.innerHTML=`<div class="toast-t">✦ ${title}</div>${msg}`;
+    document.body.appendChild(el); setTimeout(()=>el.remove(),4000);
+  }
 
-/* ════════════════════════════════
-   STORY DOM
-════════════════════════════════ */
-function sc(){ return document.getElementById('storyContent'); }
-function scroll(){ setTimeout(()=>{ const s=document.getElementById('storyScroll'); s.scrollTop=s.scrollHeight; },80); }
+  /* ════════════════════════════════
+     STORY DOM
+  ════════════════════════════════ */
+  function sc(){ return document.getElementById('storyContent'); }
+  function scroll(){ setTimeout(()=>{ const s=document.getElementById('storyScroll'); s.scrollTop=s.scrollHeight; },80); }
 
-function addChHeader(title,sub){
-  const el=document.createElement('div'); el.className='story-block ch-header';
-  el.innerHTML=`<div class="ch-title">${title}</div><div class="ch-sub">${sub}</div>`;
-  sc().appendChild(el); scroll();
-}
-function addNarr(html){
-  const el=document.createElement('div'); el.className='story-block';
-  el.innerHTML=`<p class="narr">${html}</p>`; sc().appendChild(el); scroll();
-}
-function addDlg(who,text){
-  const el=document.createElement('div'); el.className='story-block';
-  el.innerHTML=`<div class="dlg"><div class="dlg-who">${who}</div><div class="dlg-text">"${text}"</div></div>`;
-  sc().appendChild(el); scroll();
-}
-function addLocBanner(icon,name,desc){
-  const el=document.createElement('div'); el.className='story-block';
-  el.innerHTML=`<div class="loc-banner"><span class="loc-banner-icon">${icon}</span><div><div class="loc-banner-name">${name}</div><div class="loc-banner-desc">${desc}</div></div></div>`;
-  sc().appendChild(el); setLocation(name,desc); scroll();
-}
-function addCombat(enemy,pRoll,eRoll,result,dmg,win){
-  const el=document.createElement('div'); el.className='story-block';
-  el.innerHTML=`<div class="combat-box">
+  function addChHeader(title,sub){
+    const el=document.createElement('div'); el.className='story-block ch-header';
+    el.innerHTML=`<div class="ch-title">${title}</div><div class="ch-sub">${sub}</div>`;
+    sc().appendChild(el); scroll();
+  }
+  function addNarr(html){
+    const el=document.createElement('div'); el.className='story-block';
+    el.innerHTML=`<p class="narr">${html}</p>`; sc().appendChild(el); scroll();
+  }
+  function addDlg(who,text){
+    const el=document.createElement('div'); el.className='story-block';
+    el.innerHTML=`<div class="dlg"><div class="dlg-who">${who}</div><div class="dlg-text">"${text}"</div></div>`;
+    sc().appendChild(el); scroll();
+  }
+  function addLocBanner(icon,name,desc){
+    const el=document.createElement('div'); el.className='story-block';
+    el.innerHTML=`<div class="loc-banner"><span class="loc-banner-icon">${icon}</span><div><div class="loc-banner-name">${name}</div><div class="loc-banner-desc">${desc}</div></div></div>`;
+    sc().appendChild(el); setLocation(name,desc); scroll();
+  }
+  function addCombat(enemy,pRoll,eRoll,result,dmg,win){
+    const el=document.createElement('div'); el.className='story-block';
+    el.innerHTML=`<div class="combat-box">
     <div class="combat-head">⚔ ${t('combatWord')} · ${enemy.toUpperCase()}</div>
     <div class="combat-row">
       <div class="d20"><span>${pRoll}</span></div>
@@ -989,68 +1222,68 @@ function addCombat(enemy,pRoll,eRoll,result,dmg,win){
       </div>
     </div>
   </div>`; sc().appendChild(el); scroll();
-}
+  }
 
-function showTyping(){ document.getElementById('typingEl').style.display='block'; scroll(); }
-function hideTyping(){ document.getElementById('typingEl').style.display='none'; }
+  function showTyping(){ document.getElementById('typingEl').style.display='block'; scroll(); }
+  function hideTyping(){ document.getElementById('typingEl').style.display='none'; }
 
-function setChoices(choices){
-  document.getElementById('choicesGrid').innerHTML=choices.map((c,i)=>
-    `<button class="ch-btn" onclick="choose('${escAttr(c.action)}','${escAttr(c.label)}')">
+  function setChoices(choices){
+    document.getElementById('choicesGrid').innerHTML=choices.map((c,i)=>
+            `<button class="ch-btn" onclick="choose('${escAttr(c.action)}','${escAttr(c.label)}')">
       <span class="ch-num">${lang==='de'?'OPTION':'OPTION'} ${i+1}</span>${c.label}
     </button>`).join('');
-}
+  }
 
-function escAttr(s){ return (s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;').substring(0,130); }
-function lock(){ document.querySelectorAll('.ch-btn,.send-btn').forEach(b=>b.disabled=true); document.getElementById('customInp').disabled=true; }
-function unlock(){ document.querySelectorAll('.ch-btn,.send-btn').forEach(b=>b.disabled=false); document.getElementById('customInp').disabled=false; }
+  function escAttr(s){ return (s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;').substring(0,130); }
+  function lock(){ document.querySelectorAll('.ch-btn,.send-btn').forEach(b=>b.disabled=true); document.getElementById('customInp').disabled=true; }
+  function unlock(){ document.querySelectorAll('.ch-btn,.send-btn').forEach(b=>b.disabled=false); document.getElementById('customInp').disabled=false; }
 
-/* ════════════════════════════════
-   DICE
-════════════════════════════════ */
-function d20(){ return Math.floor(Math.random()*20)+1; }
-function d(n){ return Math.floor(Math.random()*n)+1; }
+  /* ════════════════════════════════
+     DICE
+  ════════════════════════════════ */
+  function d20(){ return Math.floor(Math.random()*20)+1; }
+  function d(n){ return Math.floor(Math.random()*n)+1; }
 
-function rollDice(result,label){
-  return new Promise(res=>{
-    const ov=document.getElementById('diceOverlay');
-    const numEl=document.getElementById('diceNum');
-    const outEl=document.getElementById('diceOutcome');
-    ov.style.display='flex'; numEl.textContent='?'; outEl.textContent='';
-    let tick=0;
-    const iv=setInterval(()=>{
-      numEl.textContent=Math.floor(Math.random()*20)+1;
-      if(++tick>16){
-        clearInterval(iv);
-        numEl.textContent=result;
-        const crit=result===20, fail=result===1;
-        outEl.textContent=crit?t('diceCrit'):fail?t('diceFail'):label;
-        outEl.style.color=crit?'var(--gold)':fail?'#e03030':'var(--parchment-dark)';
-        setTimeout(()=>{ ov.style.display='none'; res(); },1700);
-      }
-    },75);
-  });
-}
+  function rollDice(result,label){
+    return new Promise(res=>{
+      const ov=document.getElementById('diceOverlay');
+      const numEl=document.getElementById('diceNum');
+      const outEl=document.getElementById('diceOutcome');
+      ov.style.display='flex'; numEl.textContent='?'; outEl.textContent='';
+      let tick=0;
+      const iv=setInterval(()=>{
+        numEl.textContent=Math.floor(Math.random()*20)+1;
+        if(++tick>16){
+          clearInterval(iv);
+          numEl.textContent=result;
+          const crit=result===20, fail=result===1;
+          outEl.textContent=crit?t('diceCrit'):fail?t('diceFail'):label;
+          outEl.style.color=crit?'var(--gold)':fail?'#e03030':'var(--parchment-dark)';
+          setTimeout(()=>{ ov.style.display='none'; res(); },1700);
+        }
+      },75);
+    });
+  }
 
-function rollManual(){ const r=d20(); rollDice(r, r>=15?t('diceVictory'):t('diceWounded')); }
+  function rollManual(){ const r=d20(); rollDice(r, r>=15?t('diceVictory'):t('diceWounded')); }
 
-/* ════════════════════════════════
-   GROQ API
-════════════════════════════════ */
-async function callGroq(system, user){
-  const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','Authorization':`Bearer ${G.apiKey}`},
-    body:JSON.stringify({model:G.model,max_tokens:950,temperature:0.93,
-      messages:[{role:'system',content:system},{role:'user',content:user}]})
-  });
-  if(!r.ok){ const e=await r.json(); throw new Error(e.error?.message||'Groq error'); }
-  return (await r.json()).choices[0].message.content;
-}
+  /* ════════════════════════════════
+     GROQ API
+  ════════════════════════════════ */
+  async function callGroq(system, user){
+    const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${G.apiKey}`},
+      body:JSON.stringify({model:G.model,max_tokens:950,temperature:0.93,
+        messages:[{role:'system',content:system},{role:'user',content:user}]})
+    });
+    if(!r.ok){ const e=await r.json(); throw new Error(e.error?.message||'Groq error'); }
+    return (await r.json()).choices[0].message.content;
+  }
 
-function buildSystem(){
-  const c=G.char, recent=G.history.slice(-8).join('\n');
-  return `You are the greatest Dungeon Master in Middle-earth, narrating an epic Lord of the Rings adventure in Tolkien's style — lyrical, atmospheric, ancient. YOU MUST RESPOND IN ${t('systemLang')} ONLY.
+  function buildSystem(){
+    const c=G.char, recent=G.history.slice(-8).join('\n');
+    return `You are the greatest Dungeon Master in Middle-earth, narrating an epic Lord of the Rings adventure in Tolkien's style — lyrical, atmospheric, ancient. YOU MUST RESPOND IN ${t('systemLang')} ONLY.
 
 PLAYER: ${c.name}, ${c.raceDesc}, ${c.cls}. Level ${c.level}.
 STATS: STR ${c.str} DEX ${c.dex} WIS ${c.wis} LCK ${c.lck} END ${c.end} MAG ${c.mag}.
@@ -1068,177 +1301,321 @@ JSON SCHEMA:
   "event": {"type":"xp|item|damage|heal|companion|quest|lore","value":"number or string","message":"short msg"},
   "choices": [{"action":"key","label":"text"},{"action":"key","label":"text"},{"action":"key","label":"text"},{"action":"key","label":"text"}]
 }`;
-}
-
-async function getAI(prompt){
-  try{
-    const raw=await callGroq(buildSystem(),prompt);
-    const clean=raw.replace(/^```[a-z]*\n?/,'').replace(/\n?```$/,'').trim();
-    return JSON.parse(clean);
-  }catch(e){ console.error('AI:',e); return null; }
-}
-
-/* ════════════════════════════════
-   EVENTS
-════════════════════════════════ */
-function applyEvent(ev){
-  if(!ev) return;
-  const c=G.char, val=parseInt(ev.value)||0;
-  switch(ev.type){
-    case 'xp':
-      const xg=val||15; c.xp+=xg;
-      toast(t('toastXP'),t('toastXPMsg').replace('{n}',xg));
-      checkLevelUp(); break;
-    case 'item':
-      if(ev.value&&typeof ev.value==='string'&&ev.value.length>2){
-        c.inventory.push(ev.value); refreshInventory(); toast(t('toastItem'),ev.value);
-      } break;
-    case 'damage':
-      const dmg2=val||8; c.hp=Math.max(1,c.hp-dmg2);
-      toast(t('toastDmg'),`−${dmg2} · ${ev.message||''}`); break;
-    case 'heal':
-      const hl=val||12; c.hp=Math.min(c.hpMax,c.hp+hl);
-      toast(t('toastHeal'),`+${hl} ${t('barHp')}`); break;
-    case 'companion':
-      if(ev.value){
-        const icons={'Gandalf':'🧙','Legolas':'🏹','Gimli':'⛏️','Aragorn':'👑','Sam':'🌿','Frodo':'💍','Éowyn':'🗡️','Faramir':'👑','Treebeard':'🌳','Gandalf der Graue':'🧙','Legolas Grünblatt':'🏹'};
-        const first=ev.value.split(' ')[0]; const icon=icons[first]||'🗡️';
-        c.companions.push({icon,name:ev.value,status:ev.message||'Ally'}); refreshCompanions();
-        toast(t('toastComp'),t('toastCompMsg').replace('{n}',ev.value));
-      } break;
-    case 'quest': if(ev.value) addQuest(ev.value,ev.message||''); break;
-    case 'lore':  if(ev.message) addRumor(ev.message); break;
   }
-  c.xp+=8; checkLevelUp(); updateBars();
-}
 
-function checkLevelUp(){
-  const c=G.char;
-  if(c.xp>=c.xpNext){
-    c.xp-=c.xpNext; c.level++; c.xpNext=Math.floor(c.xpNext*1.4);
-    c.hpMax+=12; c.hp=c.hpMax; c.mpMax+=6; c.mp=c.mpMax;
-    c.str++; c.dex++; c.wis++;
-    const fl=document.createElement('div'); fl.className='levelup-flash'; document.body.appendChild(fl); setTimeout(()=>fl.remove(),700);
-    toast(t('toastLvl'),t('toastLvlMsg').replace('{n}',c.level));
-    refreshCharPanel();
+  async function getAI(prompt){
+    try{
+      const raw=await callGroq(buildSystem(),prompt);
+      const clean=raw.replace(/^```[a-z]*\n?/,'').replace(/\n?```$/,'').trim();
+      return JSON.parse(clean);
+    }catch(e){ console.error('AI:',e); return null; }
   }
-}
 
-/* ════════════════════════════════
-   RENDER
-════════════════════════════════ */
-function renderResponse(parsed){
-  if(!parsed){ renderFallback(); return; }
-  if(parsed.location) addLocBanner(parsed.location.icon||'🗺️',parsed.location.name,parsed.location.desc);
-  if(parsed.narration) parsed.narration.forEach(p=>addNarr(p));
-  if(parsed.dialogue) addDlg(parsed.dialogue.speaker,parsed.dialogue.text);
-  if(parsed.event) applyEvent(parsed.event);
-  setChoices(parsed.choices&&parsed.choices.length?parsed.choices:t('defaultChoices'));
-}
+  /* ════════════════════════════════
+     EVENTS
+  ════════════════════════════════ */
+  function applyEvent(ev){
+    if(!ev) return;
+    const c=G.char, val=parseInt(ev.value)||0;
+    switch(ev.type){
+      case 'xp':
+        const xg=val||15; c.xp+=xg;
+        toast(t('toastXP'),t('toastXPMsg').replace('{n}',xg));
+        checkLevelUp(); break;
+      case 'item':
+        if(ev.value&&typeof ev.value==='string'&&ev.value.length>2){
+          c.inventory.push(ev.value); refreshInventory(); toast(t('toastItem'),ev.value);
+        } break;
+      case 'damage':
+        const dmg2=val||8; c.hp=Math.max(1,c.hp-dmg2);
+        toast(t('toastDmg'),`−${dmg2} · ${ev.message||''}`); break;
+      case 'heal':
+        const hl=val||12; c.hp=Math.min(c.hpMax,c.hp+hl);
+        toast(t('toastHeal'),`+${hl} ${t('barHp')}`); break;
+      case 'companion':
+        if(ev.value){
+          const icons={'Gandalf':'🧙','Legolas':'🏹','Gimli':'⛏️','Aragorn':'👑','Sam':'🌿','Frodo':'💍','Éowyn':'🗡️','Faramir':'👑','Treebeard':'🌳','Gandalf der Graue':'🧙','Legolas Grünblatt':'🏹'};
+          const first=ev.value.split(' ')[0]; const icon=icons[first]||'🗡️';
+          c.companions.push({icon,name:ev.value,status:ev.message||'Ally'}); refreshCompanions();
+          toast(t('toastComp'),t('toastCompMsg').replace('{n}',ev.value));
+        } break;
+      case 'quest': if(ev.value) addQuest(ev.value,ev.message||''); break;
+      case 'lore':  if(ev.message) addRumor(ev.message); break;
+    }
+    c.xp+=8; checkLevelUp(); updateBars();
+  }
 
-function renderFallback(){
-  addNarr(t('fallbackNarr'));
-  addDlg(t('fallbackDlgWho'),t('fallbackDlgText'));
-  setChoices(t('defaultChoices'));
-}
+  function checkLevelUp(){
+    const c=G.char;
+    if(c.xp>=c.xpNext){
+      c.xp-=c.xpNext; c.level++; c.xpNext=Math.floor(c.xpNext*1.4);
+      c.hpMax+=12; c.hp=c.hpMax; c.mpMax+=6; c.mp=c.mpMax;
+      c.str++; c.dex++; c.wis++;
+      const fl=document.createElement('div'); fl.className='levelup-flash'; document.body.appendChild(fl); setTimeout(()=>fl.remove(),700);
+      toast(t('toastLvl'),t('toastLvlMsg').replace('{n}',c.level));
+      refreshCharPanel();
+    }
+  }
 
-/* ════════════════════════════════
-   ADVENTURE START
-════════════════════════════════ */
-async function startAdventure(){
-  await delay(400);
-  addChHeader(t('openChTitle'),t('openChSub'));
-  await delay(300);
-  addLocBanner('🌿',t('openLocName'),t('openLocDesc'));
-  await delay(200);
-  addNarr(t('openNarr1'));
-  await delay(200);
-  addNarr(t('openNarr2').replace('{name}',G.char.name).replace('{race}',G.char.raceDesc));
-  await delay(150);
-  addNarr(t('openNarr3'));
-  addDlg('Gandalf',t('openDlg'));
-  await delay(200);
-  setChoices(t('openChoices'));
-  G.history.push(t('openHistory'));
-}
+  /* ════════════════════════════════
+     RENDER
+  ════════════════════════════════ */
+  function renderResponse(parsed){
+    if(!parsed){ renderFallback(); return; }
+    if(parsed.location) addLocBanner(parsed.location.icon||'🗺️',parsed.location.name,parsed.location.desc);
+    if(parsed.narration) parsed.narration.forEach(p=>addNarr(p));
+    if(parsed.dialogue) addDlg(parsed.dialogue.speaker,parsed.dialogue.text);
+    if(parsed.event) applyEvent(parsed.event);
+    setChoices(parsed.choices&&parsed.choices.length?parsed.choices:t('defaultChoices'));
+  }
 
-/* ════════════════════════════════
-   CHOICE
-════════════════════════════════ */
-async function choose(action,label){
-  if(G.busy) return;
-  G.busy=true; lock();
-  G.turn++;
-  G.history.push(`Turn ${G.turn}: "${label}"`);
-  addNarr(`<em style="color:var(--gold-dark)">${t('actionPrefix')}${label}</em>`);
+  function renderFallback(){
+    addNarr(t('fallbackNarr'));
+    addDlg(t('fallbackDlgWho'),t('fallbackDlgText'));
+    setChoices(t('defaultChoices'));
+  }
 
-  const roll=d20();
-  let rollMsg='';
-  if(roll===20){ rollMsg=`<em style="color:#70c030">${t('fortuneBlaze')}</em>`; G.char.xp+=10; }
-  else if(roll===1){ rollMsg=`<em style="color:#e03030">${t('fatesCruel')}</em>`; G.char.hp=Math.max(1,G.char.hp-6); }
-  else if(roll>=15){ rollMsg=`<em style="color:var(--gold-dark)">${t('diceFavour')}</em>`; }
+  /* ════════════════════════════════
+     ADVENTURE START
+  ════════════════════════════════ */
+  async function startAdventure(){
+    await delay(400);
+    addChHeader(t('openChTitle'),t('openChSub'));
+    await delay(300);
+    addLocBanner('🌿',t('openLocName'),t('openLocDesc'));
+    await delay(200);
+    addNarr(t('openNarr1'));
+    await delay(200);
+    addNarr(t('openNarr2').replace('{name}',G.char.name).replace('{race}',G.char.raceDesc));
+    await delay(150);
+    addNarr(t('openNarr3'));
+    addDlg('Gandalf',t('openDlg'));
+    await delay(200);
+    setChoices(t('openChoices'));
+    G.history.push(t('openHistory'));
+  }
 
-  const isCombat=/(fight|attack|charge|strike|battle|kämpf|angreif|angriff|assault|defend|verteidig)/i.test(label+action);
-  if(isCombat){ await handleCombat(label); G.busy=false; return; }
+  /* ════════════════════════════════
+     CHOICE
+  ════════════════════════════════ */
+  async function choose(action,label){
+    if(G.busy) return;
+    G.busy=true; lock();
+    G.turn++;
+    G.history.push(`Turn ${G.turn}: "${label}"`);
+    addNarr(`<em style="color:var(--gold-dark)">${t('actionPrefix')}${label}</em>`);
 
-  await rollDice(roll,roll>=10?t('fortuneSmiles'):t('fatesWaver'));
-  if(rollMsg) addNarr(rollMsg);
+    const roll=d20();
+    let rollMsg='';
+    if(roll===20){ rollMsg=`<em style="color:#70c030">${t('fortuneBlaze')}</em>`; G.char.xp+=10; }
+    else if(roll===1){ rollMsg=`<em style="color:#e03030">${t('fatesCruel')}</em>`; G.char.hp=Math.max(1,G.char.hp-6); }
+    else if(roll>=15){ rollMsg=`<em style="color:var(--gold-dark)">${t('diceFavour')}</em>`; }
 
-  const chNum=Math.min(Math.floor(G.turn/7)+1,5);
-  document.getElementById('chapterTag').textContent=`${t('chapterPrefix')} ${chNum} · ${t('chapterNames')[chNum-1]}`;
+    const isCombat=/(fight|attack|charge|strike|battle|kämpf|angreif|angriff|assault|defend|verteidig)/i.test(label+action);
+    if(isCombat){ await handleCombat(label); G.busy=false; return; }
 
-  showTyping();
-  const outcome=roll>=15?t('outcomeSuccess'):roll<=5?t('outcomeComplication'):t('outcomeNeutral');
-  const prompt=t('promptTurn').replace('{t}',G.turn).replace('{l}',label).replace('{r}',roll).replace('{outcome}',outcome).replace('{loc}',G.location.name);
-  const parsed=await getAI(prompt);
-  hideTyping();
-  renderResponse(parsed);
-  updateBars();
-  G.busy=false; unlock();
-}
+    await rollDice(roll,roll>=10?t('fortuneSmiles'):t('fatesWaver'));
+    if(rollMsg) addNarr(rollMsg);
 
-async function handleCombat(label){
-  const enemiesEN=['Orc Raider','Warg Rider','Barrow-wight','Corrupted Troll','Shadow Wraith','Uruk-hai Scout','Cave-troll','Black Rider'];
-  const enemiesDE=['Orc-Räuber','Warg-Reiter','Grabhügel-Geist','Verseuchter Troll','Schattengeist','Uruk-hai-Späher','Höhlentroll','Schwarzer Reiter'];
-  const enemyList=lang==='de'?enemiesDE:enemiesEN;
-  const enemy=enemyList[Math.floor(Math.random()*enemyList.length)];
-  const pRoll=d20()+Math.floor((G.char.str-10)/2);
-  const eRoll=d20()+3;
-  const dmg=d(8)+2;
-  const win=pRoll>eRoll;
+    const chNum=Math.min(Math.floor(G.turn/7)+1,5);
+    document.getElementById('chapterTag').textContent=`${t('chapterPrefix')} ${chNum} · ${t('chapterNames')[chNum-1]}`;
 
-  let result;
-  if(pRoll===20) result=t('combatLegendary').replace('{e}',enemy);
-  else if(win) result=t('combatWin').replace('{e}',enemy);
-  else if(pRoll===eRoll) result=t('combatDraw');
-  else result=t('combatLoss').replace('{e}',enemy);
+    showTyping();
+    const outcome=roll>=15?t('outcomeSuccess'):roll<=5?t('outcomeComplication'):t('outcomeNeutral');
+    const prompt=t('promptTurn').replace('{t}',G.turn).replace('{l}',label).replace('{r}',roll).replace('{outcome}',outcome).replace('{loc}',G.location.name);
+    const parsed=await getAI(prompt);
+    hideTyping();
+    renderResponse(parsed);
+    updateBars();
+    G.busy=false; unlock();
+  }
 
-  await rollDice(pRoll,win?t('diceVictory'):t('diceWounded'));
-  addCombat(enemy,pRoll,eRoll,result,dmg,win);
-  if(!win) G.char.hp=Math.max(1,G.char.hp-dmg);
-  G.char.xp+=win?22:9;
-  checkLevelUp(); updateBars();
-  G.history.push(`Combat vs ${enemy}: ${pRoll} vs ${eRoll}. ${win?'Won':'Lost'}.`);
+  async function handleCombat(label){
+    const enemiesEN=['Orc Raider','Warg Rider','Barrow-wight','Corrupted Troll','Shadow Wraith','Uruk-hai Scout','Cave-troll','Black Rider'];
+    const enemiesDE=['Orc-Räuber','Warg-Reiter','Grabhügel-Geist','Verseuchter Troll','Schattengeist','Uruk-hai-Späher','Höhlentroll','Schwarzer Reiter'];
+    const enemyList=lang==='de'?enemiesDE:enemiesEN;
+    const enemy=enemyList[Math.floor(Math.random()*enemyList.length)];
+    const pRoll=d20()+Math.floor((G.char.str-10)/2);
+    const eRoll=d20()+3;
+    const dmg=d(8)+2;
+    const win=pRoll>eRoll;
 
-  showTyping();
-  const prompt=win
-    ?t('promptCombatWin').replace('{t}',G.turn).replace('{e}',enemy).replace('{d}',dmg)
-    :t('promptCombatLoss').replace('{t}',G.turn).replace('{e}',enemy).replace('{d}',dmg).replace('{hp}',G.char.hp);
-  const parsed=await getAI(prompt);
-  hideTyping();
-  renderResponse(parsed);
-  G.busy=false; unlock();
-}
+    let result;
+    if(pRoll===20) result=t('combatLegendary').replace('{e}',enemy);
+    else if(win) result=t('combatWin').replace('{e}',enemy);
+    else if(pRoll===eRoll) result=t('combatDraw');
+    else result=t('combatLoss').replace('{e}',enemy);
 
-async function sendCustom(){
-  const inp=document.getElementById('customInp');
-  const text=inp.value.trim();
-  if(!text||G.busy) return;
-  inp.value='';
-  await choose('custom_action',text);
-}
+    await rollDice(pRoll,win?t('diceVictory'):t('diceWounded'));
+    addCombat(enemy,pRoll,eRoll,result,dmg,win);
+    if(!win) G.char.hp=Math.max(1,G.char.hp-dmg);
+    G.char.xp+=win?22:9;
+    checkLevelUp(); updateBars();
+    G.history.push(`Combat vs ${enemy}: ${pRoll} vs ${eRoll}. ${win?'Won':'Lost'}.`);
 
-function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
+    showTyping();
+    const prompt=win
+            ?t('promptCombatWin').replace('{t}',G.turn).replace('{e}',enemy).replace('{d}',dmg)
+            :t('promptCombatLoss').replace('{t}',G.turn).replace('{e}',enemy).replace('{d}',dmg).replace('{hp}',G.char.hp);
+    const parsed=await getAI(prompt);
+    hideTyping();
+    renderResponse(parsed);
+    G.busy=false; unlock();
+  }
+
+  async function sendCustom(){
+    const inp=document.getElementById('customInp');
+    const text=inp.value.trim();
+    if(!text||G.busy) return;
+    inp.value='';
+    await choose('custom_action',text);
+  }
+
+  /* ════════════════════════════════
+     MOBILE PANEL & TAB SYSTEM
+  ════════════════════════════════ */
+  let activeTab = 'story';
+  let openPanelId = null;
+
+  function switchTab(tab){
+    activeTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    const btn = document.getElementById('tab-'+tab);
+    if(btn) btn.classList.add('active');
+
+    // Close any open panel first
+    closePanel(false);
+
+    if(tab === 'story'){
+      // just show story (default visible)
+    } else if(tab === 'char'){
+      openPanel('char');
+    } else if(tab === 'map'){
+      openPanel('map');
+    } else if(tab === 'dice'){
+      openPanel('dice');
+    }
+  }
+
+  function openPanel(id){
+    closePanel(false);
+    openPanelId = id;
+    const panel = document.getElementById('panel'+cap(id));
+    if(panel){ panel.classList.add('open'); }
+    document.getElementById('panelCloseBtn').classList.add('visible');
+    refreshMobilePanels();
+  }
+
+  function closePanel(resetTab=true){
+    document.querySelectorAll('.mob-panel').forEach(p=>p.classList.remove('open'));
+    document.getElementById('panelCloseBtn').classList.remove('visible');
+    openPanelId = null;
+    if(resetTab){
+      activeTab='story';
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      const sb=document.getElementById('tab-story');
+      if(sb) sb.classList.add('active');
+    }
+  }
+
+  function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+
+  function refreshMobilePanels(){
+    const c = G.char;
+    if(!c.name) return;
+
+    // Compact stats bar
+    document.getElementById('mobCharIcon').textContent = c.icon;
+    document.getElementById('mobCharName').textContent = c.name;
+    document.getElementById('mobCharLvl').textContent = (lang==='de'?'Stufe ':'Lv ')+c.level;
+    document.getElementById('mobHpBar').style.width = (c.hp/c.hpMax*100)+'%';
+    document.getElementById('mobMpBar').style.width = (c.mp/c.mpMax*100)+'%';
+    document.getElementById('mobXpBar').style.width = (c.xp/c.xpNext*100)+'%';
+    document.getElementById('mobHpVal').textContent = c.hp;
+    document.getElementById('mobMpVal').textContent = c.mp;
+    document.getElementById('mobXpVal').textContent = c.xp;
+
+    // Character panel
+    document.getElementById('avatarIconMob').textContent = c.icon;
+    document.getElementById('dispNameMob').textContent = c.name;
+    document.getElementById('dispRaceMob').textContent = c.raceDesc;
+    document.getElementById('lvlTxtMob').textContent = c.level;
+    document.getElementById('hpTxtMob').textContent = `${c.hp}/${c.hpMax}`;
+    document.getElementById('mpTxtMob').textContent = `${c.mp}/${c.mpMax}`;
+    document.getElementById('xpTxtMob').textContent = `${c.xp}/${c.xpNext}`;
+    document.getElementById('hpBarMob').style.width = (c.hp/c.hpMax*100)+'%';
+    document.getElementById('mpBarMob').style.width = (c.mp/c.mpMax*100)+'%';
+    document.getElementById('xpBarMob').style.width = (c.xp/c.xpNext*100)+'%';
+    const circ=239, off=circ-(c.hp/c.hpMax)*circ;
+    document.getElementById('hpRingMob').style.strokeDashoffset=off;
+
+    // Attr grid mobile
+    const attrs=[['aStr',c.str,'anStr'],['aDex',c.dex,'anDex'],['aWis',c.wis,'anWis'],
+      ['aLck',c.lck,'anLck'],['aEnd',c.end,'anEnd'],['aMag',c.mag,'anMag']];
+    document.getElementById('attrGridMob').innerHTML = attrs.map(([,v,n])=>`
+    <div class="attr-cell">
+      <span class="attr-v">${v}</span>
+      <span class="attr-n">${document.getElementById(n)?.textContent||''}</span>
+    </div>`).join('');
+
+    // Inventory mobile
+    document.getElementById('invListMob').innerHTML =
+            c.inventory.map(it=>`<div class="inv-item"><span style="font-size:16px">${it.split(' ')[0]}</span><span>${it.replace(/^\S+\s/,'')}</span></div>`).join('')
+            || `<div style="font-size:12px;color:var(--parchment-dark);font-style:italic;padding:6px">${lang==='de'?'Leer':'Empty'}</div>`;
+
+    // Map panel — sync location
+    const ln = document.getElementById('locNameMob');
+    const ld = document.getElementById('locDescMob');
+    if(ln) ln.textContent = G.location.name;
+    if(ld) ld.textContent = G.location.desc;
+
+    // Companions mobile
+    const cm = document.getElementById('compListMob');
+    if(cm) cm.innerHTML = G.char.companions.length
+            ? G.char.companions.map(cp=>`<div class="comp-item"><span style="font-size:16px">${cp.icon}</span><div><div class="comp-name">${cp.name}</div><div class="comp-status">${cp.status}</div></div></div>`).join('')
+            : `<div style="font-size:12px;color:var(--parchment-dark);font-style:italic;padding:6px">${t('aloneText')}</div>`;
+
+    // Quest log mobile
+    const ql = document.getElementById('questLogMob');
+    if(ql) ql.innerHTML = document.getElementById('questLog').innerHTML;
+
+    // Rumours mobile
+    const rl = document.getElementById('rumorListMob');
+    if(rl) rl.innerHTML = document.getElementById('rumorList').innerHTML;
+  }
+
+  function rollMob(sides){
+    const r = Math.floor(Math.random()*sides)+1;
+    const el = document.getElementById('diceResultBig');
+    const lbl = document.getElementById('diceResultLabel');
+    el.textContent='?'; lbl.textContent='';
+    let tick=0;
+    const iv=setInterval(()=>{
+      el.textContent=Math.floor(Math.random()*sides)+1;
+      if(++tick>12){
+        clearInterval(iv);
+        el.textContent=r;
+        const isCrit=(r===sides);
+        lbl.textContent = isCrit ? (lang==='de'?'✦ KRITISCHER ERFOLG ✦':'✦ CRITICAL SUCCESS ✦') : `D${sides} → ${r}`;
+        lbl.style.color = isCrit?'var(--gold)':'var(--parchment-dark)';
+      }
+    },60);
+  }
+
+  // Update tab labels on language change
+  function updateTabLabels(){
+    const labels = lang==='de'
+            ? {story:'Geschichte',char:'Charakter',map:'Karte',dice:'Würfel'}
+            : {story:'Story',char:'Character',map:'Map',dice:'Dice'};
+    document.getElementById('tabStoryLabel').textContent=labels.story;
+    document.getElementById('tabCharLabel').textContent=labels.char;
+    document.getElementById('tabMapLabel').textContent=labels.map;
+    document.getElementById('tabDiceLabel').textContent=labels.dice;
+  }
+
+  /* ════════════════════════════════
+     MOBILE PANEL & TAB SYSTEM (END)
+  ════════════════════════════════ */
 </script>
 </body>
 </html>

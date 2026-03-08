@@ -892,7 +892,7 @@
     char:{ name:'',race:'',raceDesc:'',cls:'',icon:'🌿',level:1,hp:100,hpMax:100,mp:80,mpMax:80,xp:0,xpNext:100,
       str:10,dex:10,wis:10,lck:10,end:10,mag:6,inventory:[],companions:[] },
     location:{ name:'The Shire',desc:'' },
-    history:[], turn:0, busy:false,
+    history:[], turn:0, busy:false, lastNPC:'',
     selectedRace:'', selectedClass:''
   };
 
@@ -1292,6 +1292,7 @@ COMPANIONS: ${c.companions.map(x=>x.name).join(', ')||'none'}
 RECENT: ${recent||'(start)'}
 
 RULES: Return ONLY valid JSON. No markdown. 2-4 narration paragraphs. One NPC dialogue. One event. 4 distinct choices.
+TRAVEL RULE: If the player chooses to leave, depart, travel, or move to another place, you MUST set the location field to a NEW, different location. Do NOT keep the same location name. Always honor the player's decision to travel.
 
 JSON SCHEMA:
 {
@@ -1364,7 +1365,7 @@ JSON SCHEMA:
     if(!parsed){ renderFallback(); return; }
     if(parsed.location) addLocBanner(parsed.location.icon||'🗺️',parsed.location.name,parsed.location.desc);
     if(parsed.narration) parsed.narration.forEach(p=>addNarr(p));
-    if(parsed.dialogue) addDlg(parsed.dialogue.speaker,parsed.dialogue.text);
+    if(parsed.dialogue){ G.lastNPC=parsed.dialogue.speaker; addDlg(parsed.dialogue.speaker,parsed.dialogue.text); }
     if(parsed.event) applyEvent(parsed.event);
     setChoices(parsed.choices&&parsed.choices.length?parsed.choices:t('defaultChoices'));
   }
@@ -1422,7 +1423,9 @@ JSON SCHEMA:
 
     showTyping();
     const outcome=roll>=15?t('outcomeSuccess'):roll<=5?t('outcomeComplication'):t('outcomeNeutral');
-    const prompt=t('promptTurn').replace('{t}',G.turn).replace('{l}',label).replace('{r}',roll).replace('{outcome}',outcome).replace('{loc}',G.location.name);
+    const isTravel=/(leave|depart|travel|journey|go to|head to|ride out|walk|set out|verlassen|reisen|aufbrechen|gehen|ziehen|weiterziehen|fortgehen)/i.test(label+action);
+    let prompt=t('promptTurn').replace('{t}',G.turn).replace('{l}',label).replace('{r}',roll).replace('{outcome}',outcome).replace('{loc}',G.location.name);
+    if(isTravel) prompt+=` IMPORTANT: The player is leaving ${G.location.name}. You MUST change the location to a new place in your response.`;
     const parsed=await getAI(prompt);
     hideTyping();
     renderResponse(parsed);
@@ -1434,7 +1437,7 @@ JSON SCHEMA:
     const enemiesEN=['Orc Raider','Warg Rider','Barrow-wight','Corrupted Troll','Shadow Wraith','Uruk-hai Scout','Cave-troll','Black Rider'];
     const enemiesDE=['Orc-Räuber','Warg-Reiter','Grabhügel-Geist','Verseuchter Troll','Schattengeist','Uruk-hai-Späher','Höhlentroll','Schwarzer Reiter'];
     const enemyList=lang==='de'?enemiesDE:enemiesEN;
-    const enemy=enemyList[Math.floor(Math.random()*enemyList.length)];
+    const enemy=G.lastNPC||enemyList[Math.floor(Math.random()*enemyList.length)];
     const pRoll=d20()+Math.floor((G.char.str-10)/2);
     const eRoll=d20()+3;
     const dmg=d(8)+2;
@@ -1452,6 +1455,7 @@ JSON SCHEMA:
     G.char.xp+=win?22:9;
     checkLevelUp(); updateBars();
     G.history.push(`Combat vs ${enemy}: ${pRoll} vs ${eRoll}. ${win?'Won':'Lost'}.`);
+    G.lastNPC='';
 
     showTyping();
     const prompt=win

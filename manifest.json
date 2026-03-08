@@ -1,0 +1,22 @@
+{
+  "name": "Chronicles of Middle-earth",
+  "short_name": "Middle-earth",
+  "description": "An AI-powered Lord of the Rings RPG adventure in Tolkien's style.",
+  "start_url": "/lotr-rpg-groq.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#080604",
+  "theme_color": "#c9a84c",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["games", "entertainment"],
+  "screenshots": []
+}

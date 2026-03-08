@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#080604"/>
+  <!-- Glow background -->
+  <radialGradient id="g" cx="50%" cy="50%" r="40%">
+    <stop offset="0%" stop-color="#8b1a1a" stop-opacity="0.6"/>
+    <stop offset="100%" stop-color="#080604" stop-opacity="0"/>
+  </radialGradient>
+  <ellipse cx="256" cy="256" rx="200" ry="200" fill="url(#g)"/>
+  <!-- Eye shape -->
+  <ellipse cx="256" cy="256" rx="180" ry="90" fill="none" stroke="#c9a84c" stroke-width="6" opacity="0.8"/>
+  <!-- Iris -->
+  <ellipse cx="256" cy="256" rx="140" ry="70" fill="#8b1a1a"/>
+  <!-- Pupil (vertical slit) -->
+  <ellipse cx="256" cy="256" rx="28" ry="65" fill="#1a0000"/>
+  <!-- Inner fire -->
+  <radialGradient id="f" cx="50%" cy="45%" r="50%">
+    <stop offset="0%" stop-color="#ff6600" stop-opacity="0.9"/>
+    <stop offset="60%" stop-color="#cc2200" stop-opacity="0.5"/>
+    <stop offset="100%" stop-color="#8b1a1a" stop-opacity="0"/>
+  </radialGradient>
+  <ellipse cx="256" cy="250" rx="100" ry="55" fill="url(#f)"/>
+  <!-- Gold ring -->
+  <ellipse cx="256" cy="256" rx="180" ry="90" fill="none" stroke="#c9a84c" stroke-width="3" opacity="0.5"/>
+  <!-- Corner runes (simplified) -->
+  <text x="30" y="60" font-family="serif" font-size="36" fill="#c9a84c" opacity="0.4">✦</text>
+  <text x="450" y="60" font-family="serif" font-size="36" fill="#c9a84c" opacity="0.4">✦</text>
+  <text x="30" y="500" font-family="serif" font-size="36" fill="#c9a84c" opacity="0.4">✦</text>
+  <text x="450" y="500" font-family="serif" font-size="36" fill="#c9a84c" opacity="0.4">✦</text>
+</svg>

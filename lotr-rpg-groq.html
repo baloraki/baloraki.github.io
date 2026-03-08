@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Die Chroniken Mittelerdes · Chronicles of Middle-earth</title>
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#c9a84c">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Middle-earth">
+  <link rel="apple-touch-icon" href="/icon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -465,7 +473,7 @@
 
   <div class="form-wrap">
     <label class="field-label" id="nameLabel" for="charName">Your Name in Middle-earth</label>
-    <input class="field-input" id="charName" maxlength="28">
+    <input class="field-input" id="charName" type="text" maxlength="28" autocomplete="off" data-form-type="other" data-lpignore="true">
 
     <label class="field-label" id="pathLabel">Your Path</label>
     <div class="class-grid" id="classGrid"></div>
@@ -486,6 +494,7 @@
       <div class="topbar-right">
         <button class="icon-btn" onclick="rollManual()">🎲 <span id="btnRoll">Roll</span></button>
         <button class="lang-toggle" onclick="switchLang()" id="langSwitchBtn">🌐 EN/DE</button>
+        <button class="icon-btn" onclick="newStory()" id="btnNewStory">📖 <span id="btnNewStoryLbl">New Story</span></button>
         <button class="icon-btn" onclick="changeKey()" id="btnKey">🔑 Key</button>
       </div>
     </div>
@@ -567,7 +576,7 @@
         <div class="choices-label" id="choicesLabel">⟡ What do you do? ⟡</div>
         <div class="choices-grid" id="choicesGrid"></div>
         <div class="custom-row">
-          <input class="custom-inp" id="customInp" maxlength="180" onkeypress="if(event.key==='Enter')sendCustom()">
+          <input class="custom-inp" id="customInp" type="text" maxlength="180" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-form-type="other" data-lpignore="true" onkeypress="if(event.key==='Enter')sendCustom()">
           <button class="send-btn" onclick="sendCustom()" id="sendBtn">DECLARE →</button>
         </div>
       </div>
@@ -710,7 +719,7 @@
       psChar:'Your Character', psInv:'Inventory', psLoc:'Location', psComp:'Companions', psQuest:'Quest Log', psRumor:'Whispers & Rumours',
       anStr:'Strength', anDex:'Agility', anWis:'Wisdom', anLck:'Luck', anEnd:'Endurance', anMag:'Spirit',
       barHp:'VITALITY', barMp:'SPIRIT', barXp:'LEGEND · Lv',
-      btnRoll:'Roll', btnKey:'Key',
+      btnRoll:'Roll', btnKey:'Key', btnNewStory:'New Story', confirmNewStory:'Start a new story? Your current progress will be lost.',
       choicesLabel:'⟡ What do you do? ⟡',
       customPlaceholder:'Or write your own action...',
       sendBtn:'DECLARE →',
@@ -809,7 +818,7 @@
       psChar:'Dein Charakter', psInv:'Inventar', psLoc:'Ort', psComp:'Gefährten', psQuest:'Auftragslog', psRumor:'Gerüchte & Flüstern',
       anStr:'Stärke', anDex:'Agilität', anWis:'Weisheit', anLck:'Glück', anEnd:'Ausdauer', anMag:'Geist',
       barHp:'LEBENSKRAFT', barMp:'GEISTESKRAFT', barXp:'LEGENDE · Lv',
-      btnRoll:'Würfeln', btnKey:'Schlüssel',
+      btnRoll:'Würfeln', btnKey:'Schlüssel', btnNewStory:'Neue Geschichte', confirmNewStory:'Neue Geschichte beginnen? Dein aktueller Fortschritt geht verloren.',
       choicesLabel:'⟡ Was tust du? ⟡',
       customPlaceholder:'Oder schreibe deine eigene Handlung...',
       sendBtn:'ERKLÄREN →',
@@ -983,7 +992,7 @@
     set('anStr',l('anStr')); set('anDex',l('anDex')); set('anWis',l('anWis'));
     set('anLck',l('anLck')); set('anEnd',l('anEnd')); set('anMag',l('anMag'));
     set('barHpLabel',l('barHp')); set('barMpLabel',l('barMp'));
-    set('btnRoll',l('btnRoll'));
+    set('btnRoll',l('btnRoll')); set('btnNewStoryLbl',l('btnNewStory'));
     set('choicesLabel',l('choicesLabel'));
     document.getElementById('customInp').placeholder=l('customPlaceholder');
     setVal('sendBtn',l('sendBtn'));
@@ -1022,6 +1031,91 @@
   function saveKey(key){ try{ localStorage.setItem('lotr_groq_key', key); }catch(e){} }
   function loadKey(){ try{ return localStorage.getItem('lotr_groq_key')||''; }catch(e){ return ''; } }
   function forgetKey(){ try{ localStorage.removeItem('lotr_groq_key'); }catch(e){} }
+
+  /* ════════════════════════════════
+     GAME SAVE / LOAD
+  ════════════════════════════════ */
+  const SAVE_KEY = 'lotr_save_v1';
+
+  function saveGame(){
+    try{
+      const state = {
+        lang,
+        char: JSON.parse(JSON.stringify(G.char)),
+        location: JSON.parse(JSON.stringify(G.location)),
+        history: G.history.slice(),
+        turn: G.turn, model: G.model, lastNPC: G.lastNPC,
+        selectedRace: G.selectedRace, selectedClass: G.selectedClass,
+        storyHTML: document.getElementById('storyContent').innerHTML,
+        questHTML: document.getElementById('questLog').innerHTML,
+        compHTML: document.getElementById('compList').innerHTML,
+        rumorHTML: document.getElementById('rumorList').innerHTML,
+        chapterTag: document.getElementById('chapterTag').textContent,
+        locName: document.getElementById('locName').textContent,
+        locDesc: document.getElementById('locDesc').textContent,
+      };
+      localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+    }catch(e){ console.warn('saveGame:', e); }
+  }
+
+  function loadGame(){
+    try{
+      const raw = localStorage.getItem(SAVE_KEY);
+      if(!raw) return false;
+      const s = JSON.parse(raw);
+      // Restore lang & model
+      lang = s.lang || 'en';
+      G.model = s.model || G.model;
+      G.selectedRace = s.selectedRace || '';
+      G.selectedClass = s.selectedClass || '';
+      G.lastNPC = s.lastNPC || '';
+      G.turn = s.turn || 0;
+      G.history = s.history || [];
+      Object.assign(G.char, s.char);
+      Object.assign(G.location, s.location);
+      // Show game screen
+      showScreen('gameScreen');
+      applyLang();
+      refreshCharPanel();
+      // Restore HTML
+      document.getElementById('storyContent').innerHTML = s.storyHTML || '';
+      document.getElementById('questLog').innerHTML = s.questHTML || '';
+      document.getElementById('compList').innerHTML = s.compHTML || '';
+      document.getElementById('rumorList').innerHTML = s.rumorHTML || '';
+      document.getElementById('chapterTag').textContent = s.chapterTag || '';
+      document.getElementById('chapterTag').style.display = s.chapterTag ? 'block' : '';
+      setLocation(s.locName || G.location.name, s.locDesc || G.location.desc);
+      updateBars();
+      // Restore choices (generic defaults since we can't replay last AI response)
+      setChoices(t('defaultChoices'));
+      scroll();
+      return true;
+    }catch(e){ console.warn('loadGame:', e); return false; }
+  }
+
+  function clearSave(){
+    try{ localStorage.removeItem(SAVE_KEY); }catch(e){}
+  }
+
+  function newStory(){
+    if(!confirm(t('confirmNewStory'))) return;
+    clearSave();
+    // Reset state
+    G.char={ name:'',race:'',raceDesc:'',cls:'',icon:'🌿',level:1,hp:100,hpMax:100,mp:80,mpMax:80,xp:0,xpNext:100,
+      str:10,dex:10,wis:10,lck:10,end:10,mag:6,inventory:[],companions:[] };
+    G.location={ name:'The Shire',desc:'' };
+    G.history=[]; G.turn=0; G.busy=false; G.lastNPC='';
+    G.selectedRace=''; G.selectedClass='';
+    // Clear DOM
+    document.getElementById('storyContent').innerHTML='';
+    document.getElementById('questLog').innerHTML='';
+    document.getElementById('compList').innerHTML='';
+    document.getElementById('rumorList').innerHTML='';
+    document.getElementById('chapterTag').textContent='';
+    document.querySelectorAll('[data-race],[data-class]').forEach(e=>e.classList.remove('sel'));
+    document.getElementById('charName').value='';
+    showScreen('charScreen');
+  }
 
   /* ════════════════════════════════
      API SCREEN
@@ -1065,13 +1159,23 @@
     document.getElementById('apiBtn').disabled=false;
   }
 
-  /* Auto-load saved key on startup */
+  /* Auto-load on startup */
   window.addEventListener('DOMContentLoaded', ()=>{
-    const saved = loadKey();
-    if(saved){
-      document.getElementById('apiKeyInput').value = saved;
-      // Show a subtle hint that the key was remembered
+    const savedKey = loadKey();
+    if(savedKey){
+      G.apiKey = savedKey;
+      document.getElementById('apiKeyInput').value = savedKey;
       setStatus('✦ Schlüssel gespeichert · Key remembered ✦','ok');
+    }
+    // Try to restore a saved game; if success skip to game screen
+    if(savedKey && loadGame()){
+      // Game restored — nothing more to do
+    } else {
+      // No save or no key — show appropriate screen
+      if(savedKey){
+        showScreen('charScreen');
+        applyLang();
+      }
     }
   });
 
@@ -1430,6 +1534,7 @@ JSON SCHEMA:
     hideTyping();
     renderResponse(parsed);
     updateBars();
+    saveGame();
     G.busy=false; unlock();
   }
 
@@ -1464,6 +1569,7 @@ JSON SCHEMA:
     const parsed=await getAI(prompt);
     hideTyping();
     renderResponse(parsed);
+    saveGame();
     G.busy=false; unlock();
   }
 
@@ -1620,6 +1726,13 @@ JSON SCHEMA:
   /* ════════════════════════════════
      MOBILE PANEL & TAB SYSTEM (END)
   ════════════════════════════════ */
+
+  /* Service Worker registration */
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', ()=>{
+      navigator.serviceWorker.register('/sw.js').catch(()=>{});
+    });
+  }
 </script>
 </body>
 </html>

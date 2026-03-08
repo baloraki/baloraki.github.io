@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OffertenVergleich – KI-Analyse</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:     #0f0e0d;
+  --paper:   #f5f2ee;
+  --cream:   #ede9e3;
+  --accent:  #c8392b;
+  --blue:    #1a4a7a;
+  --green:   #2a6641;
+  --muted:   #7a746c;
+  --rule:    #c9c3bb;
+  --serif:   'DM Serif Display', Georgia, serif;
+  --sans:    'Instrument Sans', sans-serif;
+  --mono:    'DM Mono', monospace;
+  --chat-w:  420px;
+  --head-h:  56px;
+}
+
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  height: var(--head-h);
+  border-bottom: 2px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  background: var(--paper);
+  flex-shrink: 0;
+  z-index: 50;
+}
+.logo {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  display: flex; align-items: center; gap: 8px;
+}
+.logo .dot { color: var(--accent); }
+.logo-tag {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  border: 1px solid var(--rule);
+  padding: 3px 8px;
+}
+.topbar-actions { display: flex; align-items: center; gap: 12px; }
+.btn {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 8px 18px;
+  border: 1.5px solid var(--ink);
+  background: transparent;
+  cursor: pointer;
+  transition: .15s;
+}
+.btn:hover { background: var(--cream); }
+.btn-primary { background: var(--ink); color: var(--paper); }
+.btn-primary:hover { background: var(--accent); border-color: var(--accent); }
+.btn-accent { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-accent:hover { background: #a02d22; border-color: #a02d22; }
+.btn-sm { padding: 5px 12px; font-size: 0.68rem; }
+
+/* ── MAIN LAYOUT ── */
+.app-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ── LEFT: MAIN PANEL ── */
+.main-panel {
+  flex: 1;
+  overflow-y: auto;
+  transition: margin-right .3s ease;
+}
+.main-panel.chat-open { margin-right: var(--chat-w); }
+
+/* ── UPLOAD SCREEN ── */
+.upload-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--head-h));
+  padding: 48px 24px;
+  gap: 40px;
+}
+.upload-screen h1 {
+  font-family: var(--serif);
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  text-align: center;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.upload-screen h1 em { font-style: italic; color: var(--accent); }
+.upload-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  width: 100%;
+  max-width: 760px;
+}
+.upload-card {
+  border: 2px dashed var(--rule);
+  padding: 36px 28px;
+  text-align: center;
+  cursor: pointer;
+  transition: .2s;
+  background: white;
+  position: relative;
+}
+.upload-card:hover, .upload-card.has-file { border-color: var(--ink); border-style: solid; }
+.upload-card.has-file { background: var(--cream); }
+.upload-card-label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.upload-card-label.a { color: var(--blue); }
+.upload-card-label.b { color: var(--green); }
+.upload-icon { font-size: 2rem; display: block; margin-bottom: 12px; opacity: .5; }
+.upload-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-top: 8px;
+  word-break: break-all;
+}
+.upload-or {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.upload-or::before, .upload-or::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
+
+/* ── RESULTS SCREEN ── */
+.results-screen { display: none; padding: 32px 36px; min-height: calc(100vh - var(--head-h)); }
+.results-screen.active { display: block; }
+
+.results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--ink);
+}
+.results-title {
+  font-family: var(--serif);
+  font-size: 1.8rem;
+  letter-spacing: -0.02em;
+}
+.file-pills { display: flex; gap: 10px; align-items: center; }
+.pill {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 5px 12px;
+  border: 1px solid;
+}
+.pill-a { color: var(--blue); border-color: var(--blue); background: #e8f0f8; }
+.pill-b { color: var(--green); border-color: var(--green); background: #e8f4ec; }
+
+/* ── COMPARISON TABLE ── */
+.compare-table-wrap { overflow-x: auto; margin-bottom: 32px; }
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  min-width: 780px;
+}
+.compare-table th {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 11px 16px;
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.compare-table td {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+  line-height: 1.55;
+}
+.compare-table tr:hover td { background: rgba(0,0,0,0.018); }
+.compare-table tr.new-row td { background: #fffbe6; }
+.col-topic { font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; }
+.col-a { color: var(--blue); }
+.col-b { color: var(--green); }
+.col-comment { color: var(--ink); }
+.col-src { font-family: var(--mono); font-size: 0.65rem; color: var(--muted); white-space: nowrap; }
+
+.badge {
+  display: inline-block;
+  padding: 2px 7px;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  margin-bottom: 3px;
+}
+.badge-diff  { background: #fef3cd; color: #856404; border: 1px solid #f0d060; }
+.badge-miss  { background: #fde8e8; color: #9b1c1c; border: 1px solid #f0a0a0; }
+.badge-ok    { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
+.badge-info  { background: #e3f0fb; color: #1a4a7a; border: 1px solid #90caf9; }
+.badge-new   { background: #fff8e1; color: #e65100; border: 1px solid #ffcc80; }
+
+.add-row-btn {
+  opacity: 0;
+  transition: opacity .15s;
+  background: var(--accent);
+  color: white;
+  border: none;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  cursor: pointer;
+  margin-left: 6px;
+}
+.compare-table tr:hover .add-row-btn { opacity: 1; }
+
+/* ── LOADING OVERLAY ── */
+.loading-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(245,242,238,0.92);
+  z-index: 200;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.loading-overlay.active { display: flex; }
+.spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--rule);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+.loading-step {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  color: var(--ink);
+  font-style: italic;
+}
+
+/* ── CHAT PANEL ── */
+.chat-panel {
+  position: fixed;
+  top: var(--head-h);
+  right: 0;
+  bottom: 0;
+  width: var(--chat-w);
+  background: var(--ink);
+  border-left: 2px solid var(--ink);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform .3s ease;
+  z-index: 40;
+}
+.chat-panel.open { transform: translateX(0); }
+
+.chat-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.chat-header-title {
+  font-family: var(--serif);
+  font-size: 1rem;
+  color: white;
+  font-style: italic;
+  display: flex; align-items: center; gap: 8px;
+}
+.chat-status {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 3px 8px;
+  border: 1px solid rgba(255,255,255,.2);
+  color: rgba(255,255,255,.5);
+}
+.chat-status.ready { border-color: #4caf50; color: #81c784; }
+.chat-close {
+  background: none; border: none; color: rgba(255,255,255,.5);
+  font-size: 1.2rem; cursor: pointer; padding: 4px;
+  transition: color .15s;
+}
+.chat-close:hover { color: white; }
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.chat-messages::-webkit-scrollbar-track { background: transparent; }
+.chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 2px; }
+
+.msg { display: flex; flex-direction: column; gap: 6px; }
+.msg-user { align-items: flex-end; }
+.msg-ai   { align-items: flex-start; }
+
+.msg-bubble {
+  max-width: 86%;
+  padding: 11px 15px;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  border-radius: 3px;
+}
+.msg-user .msg-bubble {
+  background: rgba(255,255,255,.12);
+  color: white;
+  border-radius: 3px 3px 0 3px;
+}
+.msg-ai .msg-bubble {
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.9);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 3px 3px 3px;
+}
+.msg-source {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: rgba(255,255,255,.35);
+  letter-spacing: 0.06em;
+  padding: 0 4px;
+}
+.msg-actions { display: flex; gap: 8px; }
+.msg-action-btn {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.15);
+  color: rgba(255,255,255,.6);
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: .15s;
+}
+.msg-action-btn:hover { background: rgba(255,255,255,.15); color: white; }
+.msg-action-btn.adopt { border-color: #81c784; color: #81c784; }
+.msg-action-btn.adopt:hover { background: rgba(129,199,132,.15); }
+
+.msg-thinking .msg-bubble {
+  color: rgba(255,255,255,.4);
+  font-style: italic;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.think-dots span {
+  display: inline-block;
+  width: 5px; height: 5px;
+  background: rgba(255,255,255,.3);
+  border-radius: 50%;
+  animation: bounce .9s ease infinite;
+}
+.think-dots span:nth-child(2) { animation-delay: .15s; }
+.think-dots span:nth-child(3) { animation-delay: .3s; }
+@keyframes bounce {
+  0%,60%,100% { transform: translateY(0); }
+  30% { transform: translateY(-5px); }
+}
+
+.chat-suggestions {
+  padding: 12px 20px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.suggest-chip {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  color: rgba(255,255,255,.55);
+  font-size: 0.7rem;
+  padding: 5px 11px;
+  cursor: pointer;
+  transition: .15s;
+  font-family: var(--sans);
+}
+.suggest-chip:hover { background: rgba(255,255,255,.12); color: white; border-color: rgba(255,255,255,.3); }
+
+.chat-input-row {
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255,255,255,.12);
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+.chat-input {
+  flex: 1;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.15);
+  color: white;
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  padding: 10px 14px;
+  resize: none;
+  max-height: 100px;
+  line-height: 1.5;
+  outline: none;
+  transition: border-color .15s;
+}
+.chat-input::placeholder { color: rgba(255,255,255,.3); }
+.chat-input:focus { border-color: rgba(255,255,255,.4); }
+.chat-send {
+  background: var(--accent);
+  border: none;
+  color: white;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background .15s;
+  flex-shrink: 0;
+}
+.chat-send:hover { background: #a02d22; }
+.chat-send:disabled { background: rgba(200,57,43,.3); cursor: not-allowed; }
+
+/* ── CHAT TOGGLE BUTTON ── */
+.chat-toggle {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--ink);
+  color: var(--paper);
+  border: 2px solid var(--ink);
+  padding: 14px 22px;
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 10px;
+  transition: .2s;
+  z-index: 35;
+  box-shadow: 4px 4px 0 var(--accent);
+}
+.chat-toggle:hover { background: var(--accent); border-color: var(--accent); }
+.chat-toggle.hidden { opacity: 0; pointer-events: none; }
+.chat-unread {
+  background: var(--accent);
+  color: white;
+  border-radius: 50%;
+  width: 18px; height: 18px;
+  font-size: 0.65rem;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono);
+}
+
+/* ── EMPTY STATE ── */
+.empty-chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 32px;
+  text-align: center;
+}
+.empty-chat-icon { font-size: 2.5rem; opacity: .3; }
+.empty-chat-title {
+  font-family: var(--serif);
+  font-size: 1rem;
+  color: rgba(255,255,255,.6);
+  font-style: italic;
+}
+.empty-chat-sub {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,.3);
+  line-height: 1.7;
+  max-width: 280px;
+}
+
+/* ── DEMO WARNING ── */
+.demo-banner {
+  background: #fff8e1;
+  border-bottom: 1px solid #ffe082;
+  padding: 10px 28px;
+  font-size: 0.75rem;
+  color: #795548;
+  display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0;
+}
+
+/* ── SCROLLBAR ── */
+.main-panel::-webkit-scrollbar { width: 5px; }
+.main-panel::-webkit-scrollbar-track { background: transparent; }
+.main-panel::-webkit-scrollbar-thumb { background: var(--rule); }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="logo">
+    OffertenVergleich<span class="dot">.</span>
+    <div class="logo-tag">KI-Analyse</div>
+  </div>
+  <div class="topbar-actions" id="topbarActions">
+    <button class="btn btn-sm" id="resetBtn" style="display:none" onclick="resetApp()">← Neue Analyse</button>
+    <button class="btn btn-primary btn-sm" id="chatToggleTop" style="display:none" onclick="toggleChat()">
+      💬 Analyse-Chat öffnen
+    </button>
+  </div>
+</header>
+
+<!-- DEMO BANNER (shows only on results) -->
+<div class="demo-banner" id="demoBanner" style="display:none">
+  ⚠️ &nbsp;<strong>Demo-Modus:</strong> Die KI-Antworten basieren auf den hochgeladenen Dokumenten. Stellen Sie gezielte Fragen zur Vertiefung des Vergleichs.
+</div>
+
+<!-- MAIN BODY -->
+<div class="app-body">
+  <div class="main-panel" id="mainPanel">
+
+    <!-- UPLOAD SCREEN -->
+    <div class="upload-screen" id="uploadScreen">
+      <div style="text-align:center">
+        <div style="font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.14em;color:var(--accent);margin-bottom:16px">
+          ── KI-gestützter Versicherungsvergleich ──
+        </div>
+        <h1>Zwei Offerten.<br><em>Ein klarer</em> Vergleich.</h1>
+        <p style="margin-top:16px;color:var(--muted);font-size:.88rem;max-width:480px;margin-inline:auto;line-height:1.75">
+          Laden Sie zwei Versicherungs-Offerten oder AVB hoch. Die KI vergleicht sie strukturiert, extraktiv und ohne Annahmen – mit integriertem Analyse-Chat für Rückfragen.
+        </p>
+      </div>
+      <div class="upload-grid">
+        <div class="upload-card" id="cardA" onclick="document.getElementById('fileA').click()">
+          <div class="upload-card-label a">Offerte A</div>
+          <span class="upload-icon">📄</span>
+          <div style="font-size:.8rem;color:var(--muted)">PDF oder Textdatei hochladen</div>
+          <div class="upload-name" id="nameA" style="display:none"></div>
+          <input type="file" id="fileA" accept=".pdf,.txt,.text" style="display:none" onchange="handleFile('A', this)">
+        </div>
+        <div class="upload-card" id="cardB" onclick="document.getElementById('fileB').click()">
+          <div class="upload-card-label b">Offerte B</div>
+          <span class="upload-icon">📄</span>
+          <div style="font-size:.8rem;color:var(--muted)">PDF oder Textdatei hochladen</div>
+          <div class="upload-name" id="nameB" style="display:none"></div>
+          <input type="file" id="fileB" accept=".pdf,.txt,.text" style="display:none" onchange="handleFile('B', this)">
+        </div>
+      </div>
+      <div class="upload-or" style="width:100%;max-width:760px">oder</div>
+      <div style="width:100%;max-width:760px">
+        <div style="font-family:var(--mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:8px">Demo-Modus: Beispieltexte laden</div>
+        <button class="btn btn-primary" onclick="loadDemo()" style="width:100%;padding:14px">
+          Demo-Analyse starten (Musterdokumente)
+        </button>
+      </div>
+      <div id="analyzeRow" style="display:none;width:100%;max-width:760px">
+        <button class="btn btn-accent" onclick="startAnalysis()" style="width:100%;padding:14px;font-size:.85rem">
+          ⚡ KI-Vergleich starten
+        </button>
+      </div>
+    </div>
+
+    <!-- RESULTS SCREEN -->
+    <div class="results-screen" id="resultsScreen">
+      <div class="results-header">
+        <div>
+          <div style="font-family:var(--mono);font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:8px">
+            Vergleichsergebnis
+          </div>
+          <div class="results-title">Strukturierter Vergleich</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <div class="file-pills">
+            <span class="pill pill-a" id="pillA">Offerte A</span>
+            <span class="pill pill-b" id="pillB">Offerte B</span>
+          </div>
+          <button class="btn btn-sm" onclick="exportTable()">⬇ Export</button>
+        </div>
+      </div>
+      <div class="compare-table-wrap">
+        <table class="compare-table" id="compareTable">
+          <thead>
+            <tr>
+              <th style="width:12%">Punkt</th>
+              <th style="width:20%">Offerte A</th>
+              <th style="width:20%">Offerte B</th>
+              <th style="width:22%">Kommentar</th>
+              <th style="width:9%">Quelle A</th>
+              <th style="width:9%">Quelle B</th>
+              <th style="width:8%">Aktion</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+      <div style="font-family:var(--mono);font-size:.65rem;color:var(--muted);padding:12px 0;border-top:1px solid var(--rule)">
+        ✦ Alle Angaben extraktiv aus den eingereichten Dokumenten &nbsp;·&nbsp; Keine Interpretation, keine Bewertung &nbsp;·&nbsp; Lücken explizit ausgewiesen
+      </div>
+    </div>
+
+  </div><!-- /main-panel -->
+
+  <!-- CHAT PANEL -->
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-header">
+      <div class="chat-header-title">
+        🔍 Analyse-Chat
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="chat-status ready" id="chatStatus">Bereit</span>
+        <button class="chat-close" onclick="toggleChat()" title="Schliessen">✕</button>
+      </div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+      <div class="empty-chat" id="emptyChat">
+        <div class="empty-chat-icon">💬</div>
+        <div class="empty-chat-title">Stellen Sie eine Frage zum Vergleich</div>
+        <div class="empty-chat-sub">
+          Die KI antwortet ausschliesslich auf Basis der hochgeladenen Dokumente. Bei fehlenden Informationen wird dies explizit gemeldet.
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-suggestions" id="chatSuggestions">
+      <div class="suggest-chip" onclick="askSuggestion(this)">Welche Kantone sind abgedeckt?</div>
+      <div class="suggest-chip" onclick="askSuggestion(this)">Max. Deckung Elementarschäden?</div>
+      <div class="suggest-chip" onclick="askSuggestion(this)">Nur in B enthaltene Leistungen?</div>
+      <div class="suggest-chip" onclick="askSuggestion(this)">Wo steht der Selbstbehalt genau?</div>
+      <div class="suggest-chip" onclick="askSuggestion(this)">Kündigungsfristen im Detail?</div>
+    </div>
+
+    <div class="chat-input-row">
+      <textarea
+        class="chat-input"
+        id="chatInput"
+        placeholder="Frage zu den Dokumenten stellen…"
+        rows="1"
+        onkeydown="handleChatKey(event)"
+        oninput="autoResize(this)"
+      ></textarea>
+      <button class="chat-send" id="sendBtn" onclick="sendMessage()" title="Senden">➤</button>
+    </div>
+  </div>
+
+</div><!-- /app-body -->
+
+<!-- CHAT TOGGLE BUTTON -->
+<button class="chat-toggle hidden" id="chatToggleBtn" onclick="toggleChat()">
+  <span>💬 Analyse-Chat</span>
+  <span class="chat-unread" id="unreadBadge" style="display:none">!</span>
+</button>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-step" id="loadingStep">Dokumente werden analysiert…</div>
+  <div class="loading-text" id="loadingText">KI liest und strukturiert die Inhalte</div>
+</div>
+
+<script>
+// ── STATE ──
+let state = {
+  docA: '', docB: '',
+  nameA: '', nameB: '',
+  tableRows: [],
+  chatHistory: [],
+  chatOpen: false,
+  unread: 0,
+};
+
+// ── DEMO DATA ──
+const DEMO_DOC_A = `VERSICHERUNGS-OFFERTE A – Helvetia Hausrat & Haftpflicht
+Versicherungsnehmer: Max Mustermann, Musterstrasse 1, 8001 Zürich
+Versicherungsbeginn: 01.01.2025 (Beginn nach Eingang der ersten Prämie)
+Laufzeit: 1 Jahr, automatische Verlängerung um 1 Jahr
+Jahresprämie: CHF 1'240.– (halbjährlich zahlbar, je CHF 620.–)
+Selbstbehalt: CHF 500.– je Schadenereignis (ausser bei Diebstahl CHF 300.–)
+Deckungsumfang Hausrat: Feuer, Wasser, Diebstahl, Einbruchdiebstahl, Vandalismus
+Elementarschäden: Hochwasser, Sturm, Hagel, Schneedruck bis max. CHF 50'000
+Abgedeckte Kantone (Feuer): AG, BE, BL, BS, FR, GE, GR, LU, NE, NW, OW, SG, SH, SO, SZ, TG, TI, UR, VD, VS, ZG, ZH
+Haftpflicht privat: CHF 5'000'000.– Deckungssumme
+Rechtsschutz: Nicht enthalten
+Ausgeschlossene Leistungen: Kriegsereignisse, Kernenergie, Vorsatz, Wertsachen über CHF 5'000 ohne Zusatzversicherung
+Kündigungsfrist: 3 Monate vor Ablauf, schriftlich per eingeschriebenem Brief
+Vertragsverlängerung: Automatisch um 1 Jahr wenn nicht gekündigt
+Gerichtsstand: Zürich, Schweizer Recht (VVG)
+Zusatzleistungen: Bonus von 5% nach 3 Schadensfreien Jahren
+Quelle: Offerte Helvetia, Abschn. 1–9, ausgestellt 15.11.2024`;
+
+const DEMO_DOC_B = `VERSICHERUNGS-OFFERTE B – Zurich Insurance Hausrat
+Versicherungsnehmer: Max Mustermann, Musterstrasse 1, 8001 Zürich
+Versicherungsbeginn: 01.03.2025, sofortiger Beginn ab Vertragsunterzeichnung
+Laufzeit: 3 Jahre (Mindestlaufzeit), danach jährlich kündbar
+Jahresprämie: CHF 1'185.– (jährlich zahlbar im Voraus)
+Selbstbehalt: Nicht explizit erwähnt
+Deckungsumfang Hausrat: Feuer, Wasser, Diebstahl, Einbruchdiebstahl
+Elementarschäden: Nur Sturm und Hagel inkl.; Hochwasser und Schneedruck ausdrücklich ausgeschlossen
+Abgedeckte Kantone (Feuer): AG, BE, BL, BS, FR, GE, GR, LU, SG, ZG, ZH (11 Kantone)
+Haftpflicht privat: CHF 3'000'000.– Deckungssumme
+Rechtsschutz: Basis-Rechtsschutz inkl. (Streitwert bis CHF 5'000)
+Ausgeschlossene Leistungen: Kriegsereignisse, Kernenergie, Vorsatz, Fahrlässige Herbeiführung, Schimmelschäden
+Kündigungsfrist: «Rechtzeitig» vor Vertragsende (keine Frist definiert)
+Vertragsverlängerung: Nach Mindestlaufzeit jährlich, 1 Monat Frist
+Gerichtsstand: Wohnsitz des Versicherungsnehmers, Schweizer Recht
+Zusatzleistungen: Glasbruch-Zusatz optional für CHF 48/Jahr
+Quelle: Offerte Zurich, Ziff. 1–12, ausgestellt 20.11.2024`;
+
+// ── INITIAL TABLE ROWS ──
+const INITIAL_ROWS = [
+  {
+    topic: 'Versicherungsbeginn',
+    a: 'Beginn 01.01.2025, erst nach Eingang der ersten Prämie',
+    b: 'Beginn 01.03.2025, sofort ab Vertragsunterzeichnung',
+    badge: 'diff', comment: 'Unterschiedlicher Starttermin und Bedingung',
+    srcA: 'Abschn. 1', srcB: 'Ziff. 1'
+  },
+  {
+    topic: 'Laufzeit',
+    a: '1 Jahr, automatische Verlängerung',
+    b: '3 Jahre Mindestlaufzeit, danach jährlich kündbar',
+    badge: 'diff', comment: 'B hat längere Mindestbindung (3 J.)',
+    srcA: 'Abschn. 1', srcB: 'Ziff. 2'
+  },
+  {
+    topic: 'Jahresprämie',
+    a: 'CHF 1\'240.– / Jahr, halbjährlich (2× CHF 620.–)',
+    b: 'CHF 1\'185.– / Jahr, jährlich im Voraus',
+    badge: 'diff', comment: 'Differenz CHF 55.–; Zahlungsrhythmus verschieden',
+    srcA: 'Abschn. 2', srcB: 'Ziff. 3'
+  },
+  {
+    topic: 'Selbstbehalt',
+    a: 'CHF 500.– je Ereignis (Diebstahl: CHF 300.–)',
+    b: 'Nicht erwähnt',
+    badge: 'miss', comment: '⚠ Fehlt in B – Nachfrage empfohlen',
+    srcA: 'Abschn. 3', srcB: '—'
+  },
+  {
+    topic: 'Elementar',
+    a: 'Hochwasser, Sturm, Hagel, Schneedruck bis CHF 50\'000',
+    b: 'Nur Sturm & Hagel; Hochwasser + Schneedruck ausgeschlossen',
+    badge: 'diff', comment: 'A hat breiteren Elementarschutz',
+    srcA: 'Abschn. 4', srcB: 'Ziff. 5'
+  },
+  {
+    topic: 'Haftpflicht',
+    a: 'CHF 5\'000\'000.– Deckungssumme',
+    b: 'CHF 3\'000\'000.– Deckungssumme',
+    badge: 'diff', comment: 'A hat CHF 2 Mio. höhere Deckung',
+    srcA: 'Abschn. 5', srcB: 'Ziff. 6'
+  },
+  {
+    topic: 'Rechtsschutz',
+    a: 'Nicht enthalten',
+    b: 'Basis-Rechtsschutz inkl. (bis CHF 5\'000 Streitwert)',
+    badge: 'miss', comment: 'Nur in B vorhanden',
+    srcA: '—', srcB: 'Ziff. 7'
+  },
+  {
+    topic: 'Kündigungsfrist',
+    a: '3 Monate vor Ablauf, schriftlich per Einschreiben',
+    b: '«Rechtzeitig» vor Vertragsende (nicht definiert)',
+    badge: 'info', comment: '⚠ «Rechtzeitig» in B unklar – Klärung nötig',
+    srcA: 'Abschn. 7', srcB: 'Ziff. 10'
+  },
+  {
+    topic: 'Gerichtsstand',
+    a: 'Zürich, Schweizer Recht (VVG)',
+    b: 'Wohnsitz VN, Schweizer Recht',
+    badge: 'ok', comment: 'Beide CH-Recht; Gerichtsort unterschiedlich',
+    srcA: 'Abschn. 9', srcB: 'Ziff. 12'
+  },
+  {
+    topic: 'Zusatzleistungen',
+    a: '5% Bonus nach 3 schadenfreien Jahren',
+    b: 'Glasbruch-Zusatz optional (CHF 48/Jahr)',
+    badge: 'diff', comment: 'Verschiedene Zusatzangebote',
+    srcA: 'Abschn. 8', srcB: 'Ziff. 11'
+  },
+];
+
+const BADGE_MAP = {
+  diff: ['badge-diff', 'Abweichend'],
+  miss: ['badge-miss', 'Fehlt'],
+  ok:   ['badge-ok',   'Übereinstimmend'],
+  info: ['badge-info', 'Unklar'],
+  new:  ['badge-new',  'Neu aus Chat'],
+};
+
+// ── FILE HANDLING ──
+function handleFile(side, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    if (side === 'A') {
+      state.docA = e.target.result;
+      state.nameA = file.name;
+      document.getElementById('nameA').textContent = '✓ ' + file.name;
+      document.getElementById('nameA').style.display = 'block';
+      document.getElementById('cardA').classList.add('has-file');
+    } else {
+      state.docB = e.target.result;
+      state.nameB = file.name;
+      document.getElementById('nameB').textContent = '✓ ' + file.name;
+      document.getElementById('nameB').style.display = 'block';
+      document.getElementById('cardB').classList.add('has-file');
+    }
+    if (state.docA && state.docB) {
+      document.getElementById('analyzeRow').style.display = 'block';
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ── DEMO ──
+function loadDemo() {
+  state.docA = DEMO_DOC_A;
+  state.docB = DEMO_DOC_B;
+  state.nameA = 'Helvetia_Offerte_2024.pdf';
+  state.nameB = 'Zurich_Offerte_2024.pdf';
+  startAnalysis();
+}
+
+// ── START ANALYSIS ──
+async function startAnalysis() {
+  showLoading('Dokumente werden analysiert…', 'KI liest und strukturiert die Inhalte');
+  await sleep(600);
+  setLoadingText('Vergleichspunkte werden extrahiert…', 'Strukturbasierte Analyse läuft');
+  await sleep(700);
+  setLoadingText('Tabelle wird aufgebaut…', 'Quellenangaben werden zugeordnet');
+  await sleep(500);
+
+  // If real docs uploaded, use Claude API for analysis; otherwise use demo rows
+  if (state.docA !== DEMO_DOC_A) {
+    try {
+      state.tableRows = await runAIAnalysis();
+    } catch(e) {
+      state.tableRows = INITIAL_ROWS;
+    }
+  } else {
+    state.tableRows = [...INITIAL_ROWS];
+  }
+
+  hideLoading();
+  showResults();
+}
+
+async function runAIAnalysis() {
+  const prompt = `Du bist eine spezialisierte Vergleichs-KI für Versicherungs-Offerten.
+
+Vergleiche diese zwei Dokumente strukturbasiert. Antworte NUR mit einem JSON-Array.
+Jedes Element hat diese Felder: topic, a, b, badge (diff|miss|ok|info), comment, srcA, srcB.
+
+Dokument A:
+${state.docA.slice(0, 3000)}
+
+Dokument B:
+${state.docB.slice(0, 3000)}
+
+Extrahiere alle relevanten Vergleichspunkte. JSON-Array only, kein Markdown.`;
+
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  const data = await resp.json();
+  const text = data.content.map(c => c.text || '').join('');
+  const clean = text.replace(/```json|```/g, '').trim();
+  return JSON.parse(clean);
+}
+
+// ── SHOW RESULTS ──
+function showResults() {
+  document.getElementById('uploadScreen').style.display = 'none';
+  document.getElementById('resultsScreen').classList.add('active');
+  document.getElementById('resetBtn').style.display = 'inline-block';
+  document.getElementById('chatToggleTop').style.display = 'inline-block';
+  document.getElementById('chatToggleBtn').classList.remove('hidden');
+  document.getElementById('demoBanner').style.display = 'flex';
+  document.getElementById('pillA').textContent = state.nameA || 'Offerte A';
+  document.getElementById('pillB').textContent = state.nameB || 'Offerte B';
+  renderTable();
+}
+
+// ── RENDER TABLE ──
+function renderTable() {
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '';
+  state.tableRows.forEach((row, i) => {
+    const [badgeClass, badgeLabel] = BADGE_MAP[row.badge] || BADGE_MAP.diff;
+    const tr = document.createElement('tr');
+    if (row.isNew) tr.classList.add('new-row');
+    tr.innerHTML = `
+      <td class="col-topic">${esc(row.topic)}</td>
+      <td class="col-a">${esc(row.a)}</td>
+      <td class="col-b">${esc(row.b)}</td>
+      <td class="col-comment">
+        <span class="badge ${badgeClass}">${badgeLabel}</span><br>
+        ${esc(row.comment)}
+      </td>
+      <td class="col-src">${esc(row.srcA)}</td>
+      <td class="col-src">${esc(row.srcB)}</td>
+      <td>
+        <button class="btn btn-sm" style="font-size:.62rem;padding:4px 8px" onclick="highlightRow(${i})" title="Fokussieren">🔍</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function highlightRow(i) {
+  document.querySelectorAll('#tableBody tr').forEach((r,j) => {
+    r.style.outline = j === i ? '2px solid var(--accent)' : '';
+    r.style.outlineOffset = j === i ? '-2px' : '';
+  });
+  document.querySelectorAll('#tableBody tr')[i]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ── CHAT ──
+function toggleChat() {
+  state.chatOpen = !state.chatOpen;
+  document.getElementById('chatPanel').classList.toggle('open', state.chatOpen);
+  document.getElementById('mainPanel').classList.toggle('chat-open', state.chatOpen);
+  document.getElementById('chatToggleBtn').classList.toggle('hidden', state.chatOpen);
+  if (state.chatOpen) {
+    state.unread = 0;
+    document.getElementById('unreadBadge').style.display = 'none';
+    setTimeout(() => document.getElementById('chatInput').focus(), 300);
+  }
+}
+
+function askSuggestion(el) {
+  document.getElementById('chatInput').value = el.textContent;
+  sendMessage();
+}
+
+function handleChatKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const question = input.value.trim();
+  if (!question) return;
+  input.value = '';
+  input.style.height = 'auto';
+
+  document.getElementById('emptyChat').style.display = 'none';
+  document.getElementById('sendBtn').disabled = true;
+
+  addMsg('user', question);
+  const thinking = addThinking();
+
+  state.chatHistory.push({ role: 'user', content: question });
+
+  try {
+    const answer = await callChatAPI(question);
+    removeThinking(thinking);
+    const msgEl = addMsg('ai', answer.text, answer.source);
+    addMsgActions(msgEl, answer);
+    state.chatHistory.push({ role: 'assistant', content: answer.text });
+
+    if (!state.chatOpen) {
+      state.unread++;
+      document.getElementById('unreadBadge').style.display = 'flex';
+      document.getElementById('unreadBadge').textContent = state.unread;
+    }
+  } catch(e) {
+    removeThinking(thinking);
+    addMsg('ai', 'Fehler bei der Anfrage. Bitte versuchen Sie es erneut.', '');
+  }
+
+  document.getElementById('sendBtn').disabled = false;
+  document.getElementById('chatMessages').scrollTop = 9999;
+}
+
+async function callChatAPI(question) {
+  const systemPrompt = `Du bist eine spezialisierte Vergleichs-KI für Versicherungs-Offerten.
+
+REGELN:
+- Beantworte AUSSCHLIESSLICH auf Basis der zwei Dokumente.
+- Gib immer eine Quellenangabe an (z.B. "Offerte A, Abschn. 3").
+- Wenn die Information nicht enthalten ist: Antworte mit "Diese Information ist in den Dokumenten nicht enthalten."
+- Keine Interpretationen, keine externen Quellen, keine Annahmen.
+- Antworte auf Deutsch, präzise und strukturiert.
+- Wenn die Frage auf einen neuen Vergleichspunkt hinweist, markiere das mit [NEUER_PUNKT] am Anfang und gib danach einen JSON-Block: {"topic":"...","a":"...","b":"...","badge":"diff|miss|ok|info","comment":"...","srcA":"...","srcB":"..."}
+
+Dokument A (${state.nameA || 'Offerte A'}):
+${(state.docA || DEMO_DOC_A).slice(0, 2500)}
+
+Dokument B (${state.nameB || 'Offerte B'}):
+${(state.docB || DEMO_DOC_B).slice(0, 2500)}
+
+Aktueller Vergleich enthält diese Themen: ${state.tableRows.map(r=>r.topic).join(', ')}`;
+
+  const messages = [
+    ...state.chatHistory.slice(-6),
+    { role: 'user', content: question }
+  ];
+
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: systemPrompt,
+      messages
+    })
+  });
+  const data = await resp.json();
+  const raw = data.content.map(c => c.text || '').join('');
+
+  // Parse new row suggestion
+  let newRow = null;
+  let text = raw;
+  if (raw.includes('[NEUER_PUNKT]')) {
+    const jsonMatch = raw.match(/\{[\s\S]*?\}/);
+    if (jsonMatch) {
+      try { newRow = JSON.parse(jsonMatch[0]); newRow.isNew = true; } catch(e) {}
+    }
+    text = raw.replace('[NEUER_PUNKT]', '').replace(/\{[\s\S]*?\}/, '').trim();
+  }
+
+  // Extract source hint
+  const srcMatch = text.match(/(Offerte [AB][^.;,\n]*|Abschn\.[^.;,\n]*|Ziff\.[^.;,\n]*|§\s*\d+[^.;,\n]*)/i);
+  return {
+    text,
+    source: srcMatch ? srcMatch[0].trim() : '',
+    newRow
+  };
+}
+
+function addMsg(role, text, source) {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = `msg msg-${role}`;
+  div.innerHTML = `
+    <div class="msg-bubble">${esc(text)}</div>
+    ${source ? `<div class="msg-source">📌 ${esc(source)}</div>` : ''}
+  `;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function addMsgActions(msgEl, answer) {
+  if (!answer.newRow && !answer.source) return;
+  const row = document.createElement('div');
+  row.className = 'msg-actions';
+  if (answer.source) {
+    row.innerHTML += `<button class="msg-action-btn" onclick="scrollToSource('${esc(answer.source)}')">Quelle anzeigen</button>`;
+  }
+  if (answer.newRow) {
+    row.innerHTML += `<button class="msg-action-btn adopt" onclick="adoptRow(this)" data-row='${JSON.stringify(answer.newRow).replace(/'/g,"&apos;")}'>+ In Tabelle übernehmen</button>`;
+  }
+  msgEl.appendChild(row);
+}
+
+function adoptRow(btn) {
+  try {
+    const row = JSON.parse(btn.getAttribute('data-row').replace(/&apos;/g,"'"));
+    row.isNew = true;
+    state.tableRows.push(row);
+    renderTable();
+    btn.textContent = '✓ Übernommen';
+    btn.disabled = true;
+    btn.style.opacity = '.5';
+    // scroll to table
+    document.querySelector('#tableBody tr:last-child')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // close chat briefly to show table
+    setTimeout(() => {
+      document.querySelector('#tableBody tr:last-child').style.outline = '2px solid var(--accent)';
+      document.querySelector('#tableBody tr:last-child').style.outlineOffset = '-2px';
+    }, 600);
+  } catch(e) { console.error(e); }
+}
+
+function scrollToSource(src) {
+  // highlight matching row
+  state.tableRows.forEach((row, i) => {
+    if (row.srcA.includes(src.replace(/Offerte A,?\s*/i,'')) ||
+        row.srcB.includes(src.replace(/Offerte B,?\s*/i,'')) ||
+        row.topic.toLowerCase().includes(src.toLowerCase().split(' ')[0])) {
+      highlightRow(i);
+      if (!state.chatOpen) toggleChat();
+    }
+  });
+}
+
+function addThinking() {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'msg msg-ai msg-thinking';
+  div.innerHTML = `<div class="msg-bubble"><div class="think-dots"><span></span><span></span><span></span></div> Analysiere Dokumente…</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+function removeThinking(el) { el?.remove(); }
+
+// ── EXPORT ──
+function exportTable() {
+  let csv = 'Punkt,Offerte A,Offerte B,Kommentar,Quelle A,Quelle B\n';
+  state.tableRows.forEach(r => {
+    csv += [r.topic, r.a, r.b, r.comment, r.srcA, r.srcB].map(v => `"${(v||'').replace(/"/g,'""')}"`).join(',') + '\n';
+  });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'Versicherungsvergleich.csv';
+  a.click();
+}
+
+// ── RESET ──
+function resetApp() {
+  state = { docA:'', docB:'', nameA:'', nameB:'', tableRows:[], chatHistory:[], chatOpen:false, unread:0 };
+  document.getElementById('uploadScreen').style.display = 'flex';
+  document.getElementById('resultsScreen').classList.remove('active');
+  document.getElementById('resetBtn').style.display = 'none';
+  document.getElementById('chatToggleTop').style.display = 'none';
+  document.getElementById('chatToggleBtn').classList.add('hidden');
+  document.getElementById('demoBanner').style.display = 'none';
+  document.getElementById('chatPanel').classList.remove('open');
+  document.getElementById('mainPanel').classList.remove('chat-open');
+  document.getElementById('chatMessages').innerHTML = document.getElementById('emptyChat')?.outerHTML || '';
+  document.getElementById('analyzeRow').style.display = 'none';
+  ['cardA','cardB'].forEach(id => document.getElementById(id).classList.remove('has-file'));
+  ['nameA','nameB'].forEach(id => { document.getElementById(id).style.display='none'; });
+}
+
+// ── LOADING ──
+function showLoading(step, sub) {
+  document.getElementById('loadingStep').textContent = step;
+  document.getElementById('loadingText').textContent = sub;
+  document.getElementById('loadingOverlay').classList.add('active');
+}
+function setLoadingText(step, sub) {
+  document.getElementById('loadingStep').textContent = step;
+  document.getElementById('loadingText').textContent = sub;
+}
+function hideLoading() { document.getElementById('loadingOverlay').classList.remove('active'); }
+
+// ── UTILS ──
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>

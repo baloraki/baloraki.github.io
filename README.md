@@ -15,11 +15,10 @@ A collection of random projects, UI mockups, and experiments. Just stuff I'm wor
 
 ## 🚀 Projects
 
-| Project | Description | Demo |
-|---------|-------------|------|
-| Project 1 | A cool thing I made | [View →](https://baloraki.github.io/project1) |
-| Mockup 2 | UI design experiment | [View →](https://baloraki.github.io/mockup2) |
-| Experiment 3 | Testing some ideas | [View →](https://baloraki.github.io/experiment3) |
+| Project           | Description                | Demo                                                        |
+|-------------------|----------------------------|-------------------------------------------------------------|
+| Insurance Compare | Mock to compare insurances | [View →](https://baloraki.github.io/insurance-compare.html) |
+
 
 ## 🛠️ Tech Stack
 

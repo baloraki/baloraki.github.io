@@ -1,11 +1,14 @@
 # 🎨 baloraki.github.io
-<p>
- <a href="https://baloraki.github.io">
- <img src="https://img.shields.io/badge/GitHub-Pages-blue.svg" alt="GitHub Pages" />
- </a>
-</p>
 
-<p align="center"><strong>Personal playground for projects, mockups &amp; experiments</strong></p>
+<div align="center">
+
+![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-blue.svg)
+
+**Personal playground for projects, mockups & experiments**
+
+[Visit Site](https://baloraki.github.io)
+
+</div>
 
 ---
 

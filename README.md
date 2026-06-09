@@ -8,7 +8,6 @@
 <p align="center"><strong>Personal playground for projects, mockups &amp; experiments</strong></p>
 
 ---
-
 ## 📦 What's This?
 
 A collection of random projects, UI mockups, and experiments. Just stuff I'm working on.

@@ -1,0 +1,7 @@
+# JetBrains IDE
+.idea/
+
+# Node
+node_modules/
+dist/
+.env*.local

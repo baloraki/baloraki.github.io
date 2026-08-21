@@ -1,0 +1,19 @@
+{
+  "name": "KEEP IT SPINNING",
+  "short_name": "KIS",
+  "description": "Ein hektisches 5-Minuten-Browsergame rund um die Erdrotation.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#02040b",
+  "theme_color": "#02040b",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

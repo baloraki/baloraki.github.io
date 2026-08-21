@@ -1,0 +1,19 @@
+{
+  "name": "BIG BANG — From Nothing to Life",
+  "short_name": "BIG BANG",
+  "description": "20 Level vom Nichts bis zum ersten Leben.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#02030a",
+  "theme_color": "#02030a",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
